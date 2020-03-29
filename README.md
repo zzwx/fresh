@@ -2,7 +2,7 @@
 
 Fresher is a command-line tool that builds and (re)starts your web application every time you save a Go or template file.
 
-It have been forked from [fresh](https://github.com/gravityblast/fresher) because the author [Andrea Franz](http://gravityblast.com) set it was unmanteined.
+It has been forked from [fresh](https://github.com/gravityblast/fresher) because the author [Andrea Franz](http://gravityblast.com) set it was unmaintained.
 
 If the web framework you are using supports the Fresher runner, it will show build errors on your browser.
 
@@ -21,14 +21,14 @@ Start fresher:
     fresher
 
 Fresher will watch for file events, and every time you create/modify/delete a file it will build and restart the application.
-If `go build` returns an error, it will log it in the tmp folder.
+If `go build` returns an error, it will log it in the "tmp" folder.
 
 [Traffic](https://github.com/pilu/traffic) already has a middleware that shows the content of that file if it is present. This middleware is automatically added if you run a Traffic web app in dev mode with Fresher.
 Check the `_examples` folder if you want to use it with Martini or Gocraft Web.
 
-`fresher` uses `./runner.conf` for configuration by default, but you may specify an alternative config filepath using `-c`:
+`fresher` uses `./runner.yaml` for configuration by default, but you may specify an alternative config file path using `-c`:
 
-    fresher -c other_runner.conf
+    fresher -c other_runner.yaml
 
 Here is a sample config file with the default settings:
 
@@ -49,12 +49,10 @@ Here is a sample config file with the default settings:
     log_color_watcher: magenta
     log_color_app:
 
-
 ## Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
-
+5. Create a new Pull Request
