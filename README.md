@@ -1,9 +1,7 @@
-**unmaintained**
-
 # Fresh 
 
-[![Join the chat at https://gitter.im/pilu/fresh](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/pilu/fresh?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/pilu/fresh.svg?branch=master)](https://travis-ci.org/pilu/fresh)
+  [The original fresh](https://github.com/gravityblast/fresh) is unmainted but I will keep updateing it here a quit longer.
+
 
 Fresh is a command line tool that builds and (re)starts your web application everytime you save a Go or template file.
 
@@ -13,7 +11,7 @@ It currently works with [Traffic](https://github.com/pilu/traffic), [Martini](ht
 
 ## Installation
 
-    go get github.com/pilu/fresh
+    go get github.com/roger-russel/fresh
 
 ## Usage
 
@@ -36,6 +34,7 @@ Check the `_examples` folder if you want to use it with Martini or Gocraft Web.
 Here is a sample config file with the default settings:
 
     root:              .
+    main_path:
     tmp_path:          ./tmp
     build_name:        runner-build
     build_log:         runner-build-errors.log
@@ -53,11 +52,7 @@ Here is a sample config file with the default settings:
 
 ## Author
 
-* [Andrea Franz](http://gravityblast.com)
-
-## More
-
-* [Mailing List](https://groups.google.com/d/forum/golang-fresh)
+* Created by [Andrea Franz](http://gravityblast.com), see [original project](https://github.com/gravityblast/fresh).
 
 ## Contributing
 
