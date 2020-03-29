@@ -1,4 +1,4 @@
-# Fresh 
+# Fresh
 
   [The original fresh](https://github.com/gravityblast/fresh) is unmainted but I will keep updateing it here a quit longer.
 
@@ -33,14 +33,15 @@ Check the `_examples` folder if you want to use it with Martini or Gocraft Web.
 
 Here is a sample config file with the default settings:
 
-    root:              .
-    main_path:
+    root:              .                        // the root folder where the project is
+    main_path:                                  // the folder where main.go is if it was not in root. exemple: /cmd/
     tmp_path:          ./tmp
     build_name:        runner-build
+    build_args:                                 // build args
     build_log:         runner-build-errors.log
-    valid_ext:         .go, .tpl, .tmpl, .html
+    valid_ext:         .go, .tpl, .tmpl, .html  // the extension that it will be watching
     no_rebuild_ext:    .tpl, .tmpl, .html
-    ignored:           assets, tmp
+    ignored:           assets, tmp              // ignorade folders
     build_delay:       600
     colors:            1
     log_color_main:    cyan

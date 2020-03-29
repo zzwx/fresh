@@ -73,7 +73,7 @@ func logColor(logName string) string {
 }
 
 func loadEnvSettings() {
-	for key, _ := range settings {
+	for key := range settings {
 		envKey := fmt.Sprintf("%s%s", envSettingsPrefix, strings.ToUpper(key))
 		if value := os.Getenv(envKey); value != "" {
 			settings[key] = value

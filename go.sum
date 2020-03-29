@@ -16,6 +16,7 @@ github.com/pilu/fresh v0.0.0-20190826141211-0fa698148017 h1:XXDLZIIt9NqdeIEva0DM
 github.com/pilu/fresh v0.0.0-20190826141211-0fa698148017/go.mod h1:2LLTtftTZSdAPR/iVyennXZDLZOYzyDn+T0qEKJ8eSw=
 github.com/pilu/martini v0.0.0-20140115152035-aa12658614e3 h1:EkG4VvS63Y64XHUdvLPqvZX3v+zPthiNzlRpy0y0Bbw=
 github.com/pilu/martini v0.0.0-20140115152035-aa12658614e3/go.mod h1:EP3DenvsQnrvCfdE1z2/GzfIwjqSHnJclgTYx0Yff2s=
+github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a h1:U8Xgy85P2npR1jqpNF4q9rLSt6kzrOrWubkepc3lWbE=
 github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a/go.mod h1:QKd9TvGj31l6g+MV2PqthhK68d5ZPv/Q2PvtsS0mM3I=
 github.com/pilu/traffic v0.5.3 h1:gzDC+/uF1JQNnpcjUhVnw3z9xTBKx9y9FLtdLkHrIbQ=
 github.com/pilu/traffic v0.5.3/go.mod h1:pPbakW2fofyQaXrh319Xb9TJpM8gjs/vp+71CztjeK0=
