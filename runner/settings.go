@@ -2,6 +2,7 @@ package runner
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -9,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pilu/config"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -87,12 +88,18 @@ func loadRunnerConfigSettings() {
 	}
 
 	logger.Printf("Loading settings from %s", configPath())
-	sections, err := config.ParseFile(configPath(), mainSettingsSection)
+
+	file, err := ioutil.ReadFile(configPath())
+
 	if err != nil {
-		return
+		panic(err)
 	}
 
-	for key, value := range sections[mainSettingsSection] {
+	var givenSettings map[string]string
+
+	yaml.Unmarshal(file, &givenSettings)
+
+	for key, value := range givenSettings {
 		settings[key] = value
 	}
 }
