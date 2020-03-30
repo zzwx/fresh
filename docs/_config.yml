@@ -1,6 +1,4 @@
-theme: jekyll-theme-slate
+theme: jekyll-theme-cayman
 title: [ Fresher ]
-description: [A easy way to use Middlewares on Fasthttp Routes]
+description: [Fresher is a command-line tool that builds and (re)starts your web application every time you save a Go or template file like fresh but fresher.]
 
-include:
-  - contributing.md
