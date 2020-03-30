@@ -6,8 +6,6 @@ It has been forked from [fresh](https://github.com/gravityblast/fresher) because
 
 If the web framework you are using supports the Fresher runner, it will show build errors on your browser.
 
-It currently works with [Traffic](https://github.com/pilu/traffic), [Martini](https://github.com/codegangsta/martini) and [gocraft/web](https://github.com/gocraft/web).
-
 ## Installation
 
     go get github.com/roger-russel/fresher
@@ -27,7 +25,7 @@ If `go build` returns an error, it will log it in the "tmp" folder.
 `fresher` uses `./.fresher.yaml` for configuration by default, but you may specify an alternative config file path using `-c`:
 
 ```bash
-  fresher -c other_runner.yaml
+fresher -c other_runner.yaml
 ```
 
 Here is a sample config file with the default settings:
@@ -52,7 +50,7 @@ log_color_watcher: magenta
 log_color_app:
 ```
 
-More examples can be see [here](./docs/_examples/.)
+More examples can be seen [here](https://github.com/roger-russel/fresher/tree/master/docs/_examples)
 
 ## Contributing
 
