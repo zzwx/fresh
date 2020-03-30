@@ -21,12 +21,11 @@ Start fresher:
     fresher
 
 Fresher will watch for file events, and every time you create/modify/delete a file it will build and restart the application.
+
 If `go build` returns an error, it will log it in the "tmp" folder.
 
-[Traffic](https://github.com/pilu/traffic) already has a middleware that shows the content of that file if it is present. This middleware is automatically added if you run a Traffic web app in dev mode with Fresher.
-Check the `_examples` folder if you want to use it with Martini or Gocraft Web.
 
-`fresher` uses `./runner.yaml` for configuration by default, but you may specify an alternative config file path using `-c`:
+`fresher` uses `./.fresher.yaml` for configuration by default, but you may specify an alternative config file path using `-c`:
 
     fresher -c other_runner.yaml
 
@@ -48,6 +47,8 @@ Here is a sample config file with the default settings:
     log_color_runner:  green
     log_color_watcher: magenta
     log_color_app:
+
+More examples can be see [here](./docs/_examples/.)
 
 ## Contributing
 

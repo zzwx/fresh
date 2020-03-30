@@ -1,6 +1,6 @@
 version: 1
 
-root: _examples/main-no-in-root
+root: .
 main_path:
 tmp_path: ./tmp
 build_name: runner-build

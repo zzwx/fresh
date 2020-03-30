@@ -3,10 +3,7 @@ package runner
 import (
 	"fmt"
 	"io/ioutil"
-<<<<<<< HEAD
 	"log"
-=======
->>>>>>> master
 	"os"
 	"path/filepath"
 	"runtime"
@@ -24,7 +21,7 @@ const (
 
 var settings = map[string]string{
 	"version":           "1",
-	"config_path":       "./fresher.yaml",
+	"config_path":       "./.fresher.yaml",
 	"root":              ".",
 	"main_path":         "",
 	"tmp_path":          "./tmp",
