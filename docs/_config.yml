@@ -1,3 +1,4 @@
 theme: jekyll-theme-cayman
-description: [Fresher is a command-line tool that builds and (re)starts your web application every time you save a Go or template file like fresh but fresher.]
+title: Fresher
+description: [Fresher is a command-line tool that builds and (re)starts your web application every time you save a Go or template file. It is like Fresh but fresher]
 

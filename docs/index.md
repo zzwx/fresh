@@ -1,6 +1,6 @@
 # Fresher
 
-Fresher is a command-line tool that builds and (re)starts your web application every time you save a Go or template file like fresh but fresher.
+Fresher is a command-line tool that builds and (re)starts your web application every time you save a Go or template file. It is like resh but fresher.
 
 It has been forked from [fresh](https://github.com/gravityblast/fresher) because the author [Andrea Franz](http://gravityblast.com) set it as unmaintained.
 
@@ -31,8 +31,8 @@ fresher -c other_runner.yaml
 Here is a sample config file with the default settings:
 
 ```yaml
-version: 1
-root: . # the root folder where the project is
+version: 1 # [required]
+root: . # [required] the root folder where the project is
 main_path: # the folder where main.go is if it was not in root. exemple: %root%/cmd/
 tmp_path: ./tmp
 build_name: runner-build
