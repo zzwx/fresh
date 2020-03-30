@@ -13,4 +13,6 @@ require (
 	github.com/pilu/martini v0.0.0-20140115152035-aa12658614e3
 	github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a // indirect
 	github.com/pilu/traffic v0.5.3
+	github.com/roger-russel/fresher v0.0.0-20200329231040-96aefc6d8da7 // indirect
+	gopkg.in/yaml.v2 v2.2.8
 )

@@ -2,6 +2,8 @@ package runner
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -9,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pilu/config"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -18,7 +20,8 @@ const (
 )
 
 var settings = map[string]string{
-	"config_path":       "./runner.conf",
+	"version":           "1",
+	"config_path":       "./fresher.yaml",
 	"root":              ".",
 	"main_path":         "",
 	"tmp_path":          "./tmp",
@@ -79,22 +82,37 @@ func loadEnvSettings() {
 			settings[key] = value
 		}
 	}
+
 }
 
 func loadRunnerConfigSettings() {
-	if _, err := os.Stat(configPath()); err != nil {
-		return
+
+	cfgPath := configPath()
+
+	if _, err := os.Stat(cfgPath); err != nil {
+		panic(err)
 	}
 
-	logger.Printf("Loading settings from %s", configPath())
-	sections, err := config.ParseFile(configPath(), mainSettingsSection)
+	logger.Printf("Loading settings from %s", cfgPath)
+
+	file, err := ioutil.ReadFile(cfgPath)
+
 	if err != nil {
 		return
 	}
 
-	for key, value := range sections[mainSettingsSection] {
+	var givenSettings map[string]string
+
+	yaml.Unmarshal(file, &givenSettings)
+
+	if givenSettings["version"] == "" {
+		log.Fatalln("no version was setted on config yaml file.")
+	}
+
+	for key, value := range givenSettings {
 		settings[key] = value
 	}
+
 }
 
 func initSettings() {

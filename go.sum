@@ -21,6 +21,11 @@ github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a/go.mod h1:QKd9TvGj
 github.com/pilu/traffic v0.5.3 h1:gzDC+/uF1JQNnpcjUhVnw3z9xTBKx9y9FLtdLkHrIbQ=
 github.com/pilu/traffic v0.5.3/go.mod h1:pPbakW2fofyQaXrh319Xb9TJpM8gjs/vp+71CztjeK0=
 github.com/roger-russel/fresh v0.0.0-20190826141211-0fa698148017/go.mod h1:jP6YtKszgvtMZrZKQKa6Eq3Vv97okxErRaR57RR74KU=
+github.com/roger-russel/fresher v0.0.0-20200329231040-96aefc6d8da7 h1:XD7aiAhHluOdYfXCDBTJSYCpfTNzSCdp8FLUeBxA1kc=
+github.com/roger-russel/fresher v0.0.0-20200329231040-96aefc6d8da7/go.mod h1:HUUCgC45oKsJPtVnN+REqH50BsqMC5chdTELWrMkOC8=
 golang.org/x/sys v0.0.0-20200116001909-b77594299b42/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae h1:/WDfKMnPU+m5M4xB+6x4kaepxRw6jWvR5iDRdvjHgy8=
 golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v2 v2.2.8 h1:obN1ZagJSUGI0Ek/LBmuj4SNLPfIny3KsKFopxRdj10=
+gopkg.in/yaml.v2 v2.2.8/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
