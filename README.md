@@ -1,35 +1,34 @@
-# Fresh
+# Fresher
 
-  [The original fresh](https://github.com/gravityblast/fresh) is unmainted but I will keep updateing it here a quit longer.
+Fresher is a command-line tool that builds and (re)starts your web application every time you save a Go or template file.
 
+It has been forked from [fresh](https://github.com/gravityblast/fresher) because the author [Andrea Franz](http://gravityblast.com) set it was unmaintained.
 
-Fresh is a command line tool that builds and (re)starts your web application everytime you save a Go or template file.
-
-If the web framework you are using supports the Fresh runner, it will show build errors on your browser.
+If the web framework you are using supports the Fresher runner, it will show build errors on your browser.
 
 It currently works with [Traffic](https://github.com/pilu/traffic), [Martini](https://github.com/codegangsta/martini) and [gocraft/web](https://github.com/gocraft/web).
 
 ## Installation
 
-    go get github.com/roger-russel/fresh
+    go get github.com/roger-russel/fresher
 
 ## Usage
 
     cd /path/to/myapp
 
-Start fresh:
+Start fresher:
 
-    fresh
+    fresher
 
-Fresh will watch for file events, and every time you create/modify/delete a file it will build and restart the application.
-If `go build` returns an error, it will log it in the tmp folder.
+Fresher will watch for file events, and every time you create/modify/delete a file it will build and restart the application.
+If `go build` returns an error, it will log it in the "tmp" folder.
 
-[Traffic](https://github.com/pilu/traffic) already has a middleware that shows the content of that file if it is present. This middleware is automatically added if you run a Traffic web app in dev mode with Fresh.
+[Traffic](https://github.com/pilu/traffic) already has a middleware that shows the content of that file if it is present. This middleware is automatically added if you run a Traffic web app in dev mode with Fresher.
 Check the `_examples` folder if you want to use it with Martini or Gocraft Web.
 
-`fresh` uses `./runner.conf` for configuration by default, but you may specify an alternative config filepath using `-c`:
+`fresher` uses `./runner.yaml` for configuration by default, but you may specify an alternative config file path using `-c`:
 
-    fresh -c other_runner.conf
+    fresher -c other_runner.yaml
 
 Here is a sample config file with the default settings:
 
@@ -50,16 +49,10 @@ Here is a sample config file with the default settings:
     log_color_watcher: magenta
     log_color_app:
 
-
-## Author
-
-* Created by [Andrea Franz](http://gravityblast.com), see [original project](https://github.com/gravityblast/fresh).
-
 ## Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
-
+5. Create a new Pull Request

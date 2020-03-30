@@ -3,7 +3,10 @@ package runner
 import (
 	"fmt"
 	"io/ioutil"
+<<<<<<< HEAD
 	"log"
+=======
+>>>>>>> master
 	"os"
 	"path/filepath"
 	"runtime"
@@ -98,7 +101,7 @@ func loadRunnerConfigSettings() {
 	file, err := ioutil.ReadFile(cfgPath)
 
 	if err != nil {
-		return
+		panic(err)
 	}
 
 	var givenSettings map[string]string
@@ -116,8 +119,8 @@ func loadRunnerConfigSettings() {
 }
 
 func initSettings() {
-	loadEnvSettings()
 	loadRunnerConfigSettings()
+	loadEnvSettings()
 }
 
 func getenv(key, defaultValue string) string {
