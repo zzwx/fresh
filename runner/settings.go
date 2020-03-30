@@ -116,8 +116,8 @@ func loadRunnerConfigSettings() {
 }
 
 func initSettings() {
-	loadRunnerConfigSettings()
 	loadEnvSettings()
+	loadRunnerConfigSettings()
 }
 
 func getenv(key, defaultValue string) string {
