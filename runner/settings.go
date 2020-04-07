@@ -38,6 +38,8 @@ var settings = map[string]string{
 	"log_color_runner":  "green",
 	"log_color_watcher": "magenta",
 	"log_color_app":     "",
+	"delve":             "false",
+	"delve_args":        "",
 }
 
 var colors = map[string]string{
@@ -172,4 +174,21 @@ func buildDelay() time.Duration {
 	value, _ := strconv.Atoi(settings["build_delay"])
 
 	return time.Duration(value)
+}
+
+func mustUseDelve() bool {
+
+	var b bool
+	var err error
+
+	if b, err = strconv.ParseBool(settings["delve"]); err != nil {
+		panic(err)
+	}
+
+	return b
+
+}
+
+func delveArgs() string {
+	return settings["delve_args"]
 }

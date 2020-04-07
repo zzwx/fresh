@@ -3,12 +3,19 @@ package runner
 import (
 	"io"
 	"os/exec"
+	"strings"
 )
 
 func run() bool {
 	runnerLog("Running...")
 
-	cmd := exec.Command(buildPath(), buildArgs())
+	var cmd *exec.Cmd
+
+	if mustUseDelve() {
+		cmd = exec.Command("dlv", strings.Fields(delveArgs())...)
+	} else {
+		cmd = exec.Command(buildPath(), strings.Fields(buildArgs())...)
+	}
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
@@ -32,7 +39,10 @@ func run() bool {
 		<-stopChannel
 		pid := cmd.Process.Pid
 		runnerLog("Killing PID %d", pid)
-		cmd.Process.Kill()
+		if err := cmd.Process.Kill(); err != nil {
+			panic(err)
+		}
+
 	}()
 
 	return true

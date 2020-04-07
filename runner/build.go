@@ -10,6 +10,10 @@ import (
 func build() (string, bool) {
 	buildLog("Building...")
 
+	if mustUseDelve() {
+		return "", true
+	}
+
 	cmd := exec.Command("go", "build", "-o", buildPath(), root()+mainPath())
 
 	stderr, err := cmd.StderrPipe()
