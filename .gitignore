@@ -27,3 +27,5 @@ _testmain.go
 
 *.exe
 __debug_bin
+
+dist
