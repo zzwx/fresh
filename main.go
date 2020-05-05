@@ -30,7 +30,7 @@ func main() {
 	flag.Parse()
 
 	if *versionFlag {
-		fmt.Printf("%s\nbuilded at: %s\ncommit hash: %s\n", version, date, commit)
+		fmt.Printf("v%s\nbuilded at: %s\ncommit hash: %s\n", version, date, commit)
 		os.Exit(0)
 	}
 
