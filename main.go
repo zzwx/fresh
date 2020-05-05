@@ -21,6 +21,8 @@ import (
 )
 
 var version string
+var commit string
+var date string
 
 func main() {
 	configPath := flag.String("c", "", "config file path")
@@ -28,7 +30,7 @@ func main() {
 	flag.Parse()
 
 	if *versionFlag {
-		fmt.Println(version)
+		fmt.Printf("%s\nbuilded at: %s\ncommit hash: %s\n", version, date, commit)
 		os.Exit(0)
 	}
 
