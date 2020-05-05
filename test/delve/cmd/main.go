@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
@@ -19,16 +21,18 @@ func main() {
 
 	fmt.Println("Server Listening at 0.0.0.0:8101")
 
-	var shutdownCh = make(chan os.Signal, 1)
-
 	var server *fasthttp.Server
 
-	go func(server *fasthttp.Server) {
+	go func() {
 		server = &fasthttp.Server{
 			Handler: router.Handler,
 		}
-	}(server)
+	}()
 
-	<-shutdownCh
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	fmt.Println("Server shutdown")
 	server.Shutdown()
+	fmt.Println("Server Exiting")
 }
