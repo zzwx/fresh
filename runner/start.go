@@ -79,12 +79,7 @@ func start() {
 					stopChannel <- true
 				}
 				run()
-
-				if exiting == true {
-					done <- true
-				}
 			}
-
 			started = true
 			mainLog(strings.Repeat("-", 20))
 		}

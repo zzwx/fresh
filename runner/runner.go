@@ -37,14 +37,23 @@ func run() bool {
 
 	go func() {
 		<-stopChannel
+		runnerLog("Stoping Command Execution")
+
 		pid := cmd.Process.Pid
 		runnerLog("Killing PID %d", pid)
+
 		if err := cmd.Process.Kill(); err != nil {
 			panic(err)
 		}
-	}()
 
-	cmd.Wait()
+		if exiting == true {
+			done <- true
+		}
+
+		runnerLog("Killed")
+		cmd.Process.Wait()
+
+	}()
 
 	return true
 }
