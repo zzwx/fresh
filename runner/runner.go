@@ -42,8 +42,7 @@ func run() bool {
 		if err := cmd.Process.Kill(); err != nil {
 			panic(err)
 		}
-
 	}()
-
+	cmd.Wait()
 	return true
 }
