@@ -9,6 +9,5 @@ dev:
 
 .PHONY: release
 release:
-	@goreleaser release --skip-publish
-	@goreleaser
-
+	@rm -fR dist
+	@goreleaser release
