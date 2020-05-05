@@ -20,9 +20,17 @@ import (
 	"github.com/roger-russel/fresher/runner"
 )
 
+var version string
+
 func main() {
 	configPath := flag.String("c", "", "config file path")
+	versionFlag := flag.Bool("v", false, "Print the current version and exit")
 	flag.Parse()
+
+	if *versionFlag {
+		fmt.Println(version)
+		os.Exit(0)
+	}
 
 	if *configPath != "" {
 		if _, err := os.Stat(*configPath); err != nil {
