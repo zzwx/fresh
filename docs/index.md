@@ -52,6 +52,11 @@ log_color_app:
 
 More examples can be seen [here](https://github.com/roger-russel/fresher/tree/master/docs/_examples)
 
+To see ther fresher version run
+```bash
+fresher -v
+```
+
 ## Contributing
 
 1. Fork it
