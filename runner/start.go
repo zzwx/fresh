@@ -3,14 +3,19 @@ package runner
 import (
 	"fmt"
 	"os"
+	"os/signal"
 	"runtime"
 	"strings"
+	"syscall"
 	"time"
 )
 
 var (
 	startChannel chan string
 	stopChannel  chan bool
+	done         chan bool
+	quit         chan os.Signal
+	exiting      bool
 	mainLog      logFunc
 	watcherLog   logFunc
 	runnerLog    logFunc
@@ -34,6 +39,8 @@ func start() {
 	buildDelay := buildDelay()
 
 	started := false
+
+	go termHandler()
 
 	go func() {
 		for {
@@ -72,6 +79,10 @@ func start() {
 					stopChannel <- true
 				}
 				run()
+
+				if exiting == true {
+					done <- true
+				}
 			}
 
 			started = true
@@ -106,9 +117,20 @@ func setEnvVars() {
 	}
 }
 
+func termHandler() {
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	exiting = true
+	stopChannel <- true
+}
+
 // Start Watches for file changes in the root directory.
 // After each file system event it builds and (re)starts the application.
 func Start() {
+
+	done = make(chan bool)
+
 	initLimit()
 	initSettings()
 	initLogFuncs()
@@ -118,5 +140,5 @@ func Start() {
 	start()
 	startChannel <- "/"
 
-	<-make(chan int)
+	<-done
 }

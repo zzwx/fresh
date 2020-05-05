@@ -43,6 +43,8 @@ func run() bool {
 			panic(err)
 		}
 	}()
+
 	cmd.Wait()
+
 	return true
 }
