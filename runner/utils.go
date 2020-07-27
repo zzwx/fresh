@@ -12,11 +12,11 @@ import (
 
 func initFolders() {
 	if isDebug() {
-		runnerLog("InitFolders")
+		runnerLog("Initializing folders...")
 	}
 	path := tmpPath()
 	if _, errDir := os.Stat(path); os.IsNotExist(errDir) {
-		runnerLog("Creating %s", path)
+		runnerLog("Creating %s...", path)
 		err := os.Mkdir(path, 0755)
 
 		if err != nil {
@@ -124,16 +124,40 @@ func shouldRebuild(eventName string) bool {
 		fileName = fileName[0 : len(fileName)-1]
 	}
 
-	for _, e := range strings.Split(settings["no_rebuild_ext"], ",") {
-		e = strings.TrimSpace(e)
-		//fileName := filepath.Clean(strings.Replace(strings.Split(eventName, ":")[0], `"`, "", -1))
-		if strings.HasSuffix(fileName, e) {
-			return false
+	if isIgnored(fileName) {
+		return false
+	}
+	ext := filepath.Ext(fileName)
+
+	r := csv.NewReader(strings.NewReader(settings["no_rebuild_ext"]))
+	r.LazyQuotes = true
+	r.Comma = ','
+	r.TrimLeadingSpace = true
+	for {
+		record, err := r.Read()
+		if err == io.EOF {
+			break
 		}
-		if isIgnored(fileName) {
-			return false
+		if err != nil {
+			log.Fatal(err)
+		}
+		for i := 0; i < len(record); i++ {
+			if strings.TrimSpace(record[i]) == ext {
+				return false
+			}
 		}
 	}
+
+	//for _, e := range strings.Split(settings["no_rebuild_ext"], ",") {
+	//	e = strings.TrimSpace(e)
+	//	//fileName := filepath.Clean(strings.Replace(strings.Split(eventName, ":")[0], `"`, "", -1))
+	//	if strings.HasSuffix(fileName, e) {
+	//		return false
+	//	}
+	//	if isIgnored(fileName) {
+	//		return false
+	//	}
+	//}
 
 	return true
 }

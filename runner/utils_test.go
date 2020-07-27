@@ -31,7 +31,7 @@ func TestIsWatchedExt(t *testing.T) {
 
 func TestShouldRebuild(t *testing.T) {
 	settings["valid_ext"] = ".go, .tpl, .tmpl, .html, .ts, .scss, .css, .tsx, .json, .txt"
-	settings["no_rebuild_ext"] = "tpl, .tmpl, .html"
+	settings["no_rebuild_ext"] = ".tpl, .tmpl, .html"
 	settings["ignore"] = "src\\main\\script.ts, build\\bundle.js, tmp\\*, src\\main\\node_modules, src\\main\\node_modules\\*"
 	tests := []struct {
 		eventName string
