@@ -1,15 +1,15 @@
 # Fresh
 
-Fresh is a command-line tool that builds and (re)starts your web application every time you save a Go or template file.
+Fresh is a command-line tool that builds and (re)starts your web application every time you save a Go or template file or any desired files you specify using configuration.
 
 It was forked from [fresh](https://github.com/gravityblast/fresh) because the author [Andrea Franz](http://gravityblast.com) set it as unmaintained.
 One of the later forks was named `fresher`, and I pulled it from [Roger Russel's](https://github.com/roger-russel/fresher.git) repo.
 Then I renamed it back to **fresh** because I don't see a reason why not. I'm used to the name, and I can simply replace original fresh
 with my own and don't think about it.
 
-Fresh can be useful on Windows vs `go run` because of building executable at one location, causing Windows firewall to bother only once with its popup window. 
+Fresh can be useful on Windows vs `go run` because of executable is built at one location, causing the Windows Firewall to bother only once with its popup window. 
 
-This fork as particularly addressing the following goals, that were not met by neither the original "fresh", nor the forks that I was able to find:
+This fork is particularly addressing the following goals:
 
 * Work with any **folder separator**, so that one configuration file acts the same way on different platforms.
 * Allow quotes `"` to surround names in the list of folders, and file extensions for more control over spaces and commas in file names.
@@ -20,9 +20,11 @@ This fork as particularly addressing the following goals, that were not met by n
     * Ignore wild-carded patterns (`bootstrap-*/**`)
 * Allow individual files to be ignored, because if a file type is monitored, but one particular file of that type shouldn't be (for instance, because it's auto-generated), there was no way to configure that.
 * Allow for `ignore` (now default) in the settings (it just bothered me to use past tense). `ignored` still works for backward-compatibility.
-* Additional `debug` setting to remove unnecessary output.
+* Set `debug` setting `false` to remove unnecessary output.
+* Check for wrong settings names.
 
-Converting to `yaml` configuration allows for multi-line values (with padding) to be used for options as well as comments after `#`.
+Converting to `yaml` configuration allows for multi-line values (with at least one space padding on every line) to be used for long option values.
+Also, comments are possible after `#` symbol.
 
 ## Backward Compatibility
 
@@ -38,20 +40,20 @@ In this edition, sub-folders of an ignored folder are not automatically ignored,
 
 In short,
 
-* Specifying just `a` as ignored result in:
+* Specifying just `a` as ignored results in:
     * `a` will be ignored
     * `a/sub` will **not** be ignored
     * `s/sub/sub` will **not** be ignored
-* Specifying just `s/*` as ignored result in:
+* Specifying just `s/*` as ignored results in:
     * `s` will **not** be ignored
     * `s/sub` will be ignored
     * `s/sub/sub` will **not** be ignored
-* Specifying just `m/**` as ignored result in:
+* Specifying just `m/**` as ignored results in:
     * `m` will **not** be ignored
     * `m/sub` will be ignored
     * `m/sub/sub` will be ignored
 
-To combine, comma-separate `a` and `a/**`, which will make both the folder and all the sub and sub-sub folders ignored.
+To emulate full ignore similar to the way it worked in original `fresh`, simply comma-separate `a` and `a/**`, which will make both the folder and all the sub and sub-sub folders ignored.
 
 ## Installation
 
