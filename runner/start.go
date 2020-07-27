@@ -65,7 +65,9 @@ func start() {
 
 			flushEvents()
 
-			mainLog("Started! (%d Goroutines)", runtime.NumGoroutine())
+			if isDebug() {
+				mainLog("Started! (%d Goroutines)", runtime.NumGoroutine())
+			}
 			err := removeBuildErrorsLog()
 			if err != nil {
 				if isDebug() {
@@ -94,7 +96,7 @@ func start() {
 					started = true
 				}
 			}
-			mainLog(strings.Repeat("-", 20))
+			//mainLog(strings.Repeat("-", 20))
 		}
 	}()
 }
