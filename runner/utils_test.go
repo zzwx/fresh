@@ -4,7 +4,8 @@ import (
 	"testing"
 )
 
-func TestIsWatchedFile(t *testing.T) {
+func TestIsWatchedExt(t *testing.T) {
+	settings["valid_ext"] = `.go, "", .tpl, ".tmpl", .html, ".g,m"`
 	tests := []struct {
 		file     string
 		expected bool
@@ -14,61 +15,93 @@ func TestIsWatchedFile(t *testing.T) {
 		{"test.tmpl", true},
 		{"test.html", true},
 		{"test.css", false},
-		{"test-executable", false},
-		{"./tmp/test.go", false},
+		{"test.g,m", true},          // comma in file type
+		{"test-no-extension", true}, // "" allows for files that end with no extension
 	}
+	// valid_ext: .go, .tpl, .tmpl, .html
 
 	for _, test := range tests {
-		actual := isWatchedFile(test.file)
+		actual := isWatchedExt(test.file)
 
 		if actual != test.expected {
-			t.Errorf("Expected %v, got %v", test.expected, actual)
+			t.Errorf("Expected %v, got %v (%q)", test.expected, actual, test.file)
 		}
 	}
 }
 
 func TestShouldRebuild(t *testing.T) {
+	settings["valid_ext"] = ".go, .tpl, .tmpl, .html, .ts, .scss, .css, .tsx, .json, .txt"
+	settings["no_rebuild_ext"] = "tpl, .tmpl, .html"
+	settings["ignore"] = "src\\main\\script.ts, build\\bundle.js, tmp\\*, src\\main\\node_modules, src\\main\\node_modules\\*"
 	tests := []struct {
 		eventName string
 		expected  bool
 	}{
-		{`"test.go": MODIFIED`, true},
-		{`"test.tpl": MODIFIED`, false},
-		{`"test.tmpl": DELETED`, false},
-		{`"unknown.extension": DELETED`, true},
-		{`"no_extension": ADDED`, true},
-		{`"./a/path/test.go": MODIFIED`, true},
+		{`"src\\main\\script.ts": MODIFY`, false},
+		{`"src/main/script.ts": MODIFY`, false},
+		{`"src\\main/validscript.ts": MODIFY`, true},
+		{`"tmp/somefile.go": MODIFY`, false},
+		{`"tmp/deep/somefile.go": MODIFY`, true},
+		{`"test.go": MODIFY`, true},
+		{`"test.tpl": MODIFY`, false},
+		{`"test.tmpl": DELETE`, false},
+		{`"unknown.extension": DELETE`, true},
+		{`"no_extension": ADD`, true},
+		{`"./a/path/test.go": MODIFY`, true},
 	}
 
 	for _, test := range tests {
 		actual := shouldRebuild(test.eventName)
 
 		if actual != test.expected {
-			t.Errorf("Expected %v, got %v (event was '%s')", test.expected, actual, test.eventName)
+			t.Errorf("Expected %v, got %v (event was %v)", test.expected, actual, test.eventName)
 		}
 	}
 }
 
-func TestIsIgnoredFolder(t *testing.T) {
-	settings["ignored"] = "tmp, assets, app/controllers"
+func TestIsIgnored(t *testing.T) {
+	settings["ignore"] = "a, b, b/*, s/*, m/**, tmp, tmp/*, build/file.ts, assets/*, app/controllers/, \"app/controllers/*\", app/views/*, \"dir with space\", \"dir\\sub\""
 	tests := []struct {
 		dir      string
 		expected bool
 	}{
-		{"assets", true},
+		{"a", true}, // "a" means a, but not sub-folders nor sub-sub-folders of a
+		{"a/sub", false},
+		{"a/sub/sub", false},
+
+		{"b", true}, // "b, b/*" means b, and b sub-folders, but not b sub-sub-folders
+		{"b/sub", true},
+		{"b/sub/sub", false},
+
+		{"s", false}, // "s/*" means s sub-folders but not sub-sub-folders too, and not the s itself
+		{"s/sub", true},
+		{"s/sub/sub", false},
+
+		{"m", false}, // "m/**" means m sub-folders and all its sub-folders too, but not the m itself
+		{"m/sub", true},
+		{"m/sub/sub", true},
+
+		{"assets", false}, // "assets/*" is in the list, but not the "assets".
 		{"assets/node_modules", true},
+		{"./build\\file.ts", true}, // regular files can be ignored.
+		{"build/anotherFile.ts", false},
 		{"tmp", true},
 		{"tmp/pid", true},
 		{"app", false},
 		{"app/controllers", true},
 		{"app/controllers/user", true},
-		{"app/views", false},
+		{"app/views", false},         // because "app/views" is not listed.
+		{"app/views/ is good", true}, // because "app/views/*" is listed.
+		{"dir with space", true},
+		{"./dir with space", true},
+		{"./dir/sub", true},
+		{"\\dir\\sub", false}, // not the root dir.
+		{"dir\\sub", true},    // now fine.
 	}
-
 	for _, test := range tests {
-		actual := isIgnoredFolder(test.dir)
+		actual := isIgnored(test.dir)
 		if actual != test.expected {
-			t.Errorf("Expected %v, got %v", test.expected, actual)
+			t.Errorf("Expected %v, got %v (for %q)", test.expected, actual, test.dir)
 		}
 	}
 }

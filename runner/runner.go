@@ -7,7 +7,9 @@ import (
 )
 
 func run() bool {
-	runnerLog("Running...")
+	if isDebug() {
+		runnerLog("Running...")
+	}
 
 	var cmd *exec.Cmd
 
@@ -37,16 +39,19 @@ func run() bool {
 
 	go func() {
 		<-stopChannel
-		runnerLog("Stoping Command Execution")
+		if isDebug() {
+			runnerLog("Stopping...")
+		}
 
 		pid := cmd.Process.Pid
-		runnerLog("Killing PID %d", pid)
+		runnerLog("Killing PID %d...", pid)
 
 		if err := cmd.Process.Kill(); err != nil {
-			panic(err)
+			runnerLog("Killing PID %d failed: %v", pid, err)
 		}
 
 		if exiting == true {
+			resetTermColors()
 			done <- true
 		}
 

@@ -18,12 +18,14 @@ func watchFolder(path string) {
 		for {
 			select {
 			case ev := <-watcher.Event:
-				if isWatchedFile(ev.Name) && !ev.IsAttrib() {
-					watcherLog("sending event %s", ev)
+				if isWatchedExt(ev.Name) && !ev.IsAttrib() {
+					if isDebug() {
+						watcherLog("sending event %s", ev)
+					}
 					startChannel <- ev.String()
 				}
 			case err := <-watcher.Error:
-				watcherLog("error: %s", err)
+				watcherLog("Error: %s", err)
 			}
 		}
 	}()
@@ -44,12 +46,15 @@ func watch() {
 				return filepath.SkipDir
 			}
 
-			if isIgnoredFolder(path) {
-				watcherLog("Ignoring %s", path)
-				return filepath.SkipDir
+			if isIgnored(path) {
+				if isDebug() {
+					watcherLog("Ignoring %s", path)
+				}
+				// Not recursively ignoring anymore
+				//return filepath.SkipDir
+			} else {
+				watchFolder(path)
 			}
-
-			watchFolder(path)
 		}
 
 		return err

@@ -3,7 +3,6 @@ package runner
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -11,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -21,7 +20,7 @@ const (
 
 var settings = map[string]string{
 	"version":           "1",
-	"config_path":       "./.fresher.yaml",
+	"config_path":       "./.fresh.yaml",
 	"root":              ".",
 	"main_path":         "",
 	"tmp_path":          "./tmp",
@@ -30,9 +29,9 @@ var settings = map[string]string{
 	"build_log":         "runner-build-errors.log",
 	"valid_ext":         ".go, .tpl, .tmpl, .html",
 	"no_rebuild_ext":    ".tpl, .tmpl, .html",
-	"ignored":           "assets, tmp",
+	"ignore":            "assets, tmp/*",
 	"build_delay":       "600",
-	"colors":            "1",
+	"colors":            "true",
 	"log_color_main":    "cyan",
 	"log_color_build":   "yellow",
 	"log_color_runner":  "green",
@@ -40,6 +39,7 @@ var settings = map[string]string{
 	"log_color_app":     "",
 	"delve":             "false",
 	"delve_args":        "",
+	"debug":             "true",
 }
 
 var colors = map[string]string{
@@ -92,26 +92,44 @@ func loadRunnerConfigSettings() {
 	cfgPath := configPath()
 
 	if _, err := os.Stat(cfgPath); err != nil {
-		panic(err)
+		mainLog("Error opening config file %v: %v", cfgPath, err)
+		os.Exit(1)
 	}
 
-	logger.Printf("Loading settings from %s", cfgPath)
+	mainLog("Loading settings from %s", cfgPath)
 
 	file, err := ioutil.ReadFile(cfgPath)
 
 	if err != nil {
-		panic(err)
+		mainLog("Error reading config file %v: %v", cfgPath, err)
+		os.Exit(1)
 	}
 
 	var givenSettings map[string]string
 
 	yaml.Unmarshal(file, &givenSettings)
 
-	if givenSettings["version"] == "" {
-		log.Fatalln("no version was setted on config yaml file.")
-	}
+	//if givenSettings["version"] == "" {
+	//	log.Fatalln("no version was set on config yaml file.")
+	//}
 
 	for key, value := range givenSettings {
+		if key == "ignored" {
+			// Allow old "ignored" setting to be an alias of "ignore".
+			key = "ignore"
+		}
+
+		if _, ok := settings[key]; !ok {
+			mainLog("Unknown setting: %s", key)
+			os.Exit(1)
+		}
+
+		if key == "colors" || key == "debug" {
+			if value == "1" {
+				value = "true"
+			}
+		}
+
 		settings[key] = value
 	}
 
@@ -191,4 +209,8 @@ func mustUseDelve() bool {
 
 func delveArgs() string {
 	return settings["delve_args"]
+}
+
+func isDebug() bool {
+	return settings["debug"] == "true"
 }

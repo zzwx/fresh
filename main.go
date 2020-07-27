@@ -1,14 +1,14 @@
 /*
-fresher is a command line tool that builds and (re)starts your web application everytime you save a go or template file.
+fresh is a command line tool that builds and (re)starts your web application everytime you save a go or template file.
 
-If the web framework you are using supports the fresher runner, it will show build errors on your browser.
+If the web framework you are using supports the fresh runner, it will show build errors on your browser.
 
 It currently works with Traffic (https://github.com/pilu/traffic), Martini (https://github.com/codegangsta/martini) and gocraft/web (https://github.com/gocraft/web).
 
-fresher will watch for file events, and every time you create/modifiy/delete a file it will build and restart the application.
+fresh will watch for file events, and every time you create/modifiy/delete a file it will build and restart the application.
 If `go build` returns an error, it will logs it in the tmp folder.
 
-Traffic (https://github.com/pilu/traffic) already has a middleware that shows the content of that file if it is present. This middleware is automatically added if you run a Traffic web app in dev mode with fresher.
+Traffic (https://github.com/pilu/traffic) already has a middleware that shows the content of that file if it is present. This middleware is automatically added if you run a Traffic web app in dev mode with fresh.
 */
 package main
 
@@ -17,22 +17,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/roger-russel/fresher/runner"
+	"github.com/zzwx/fresh/runner"
 )
-
-var version string
-var commit string
-var date string
 
 func main() {
 	configPath := flag.String("c", "", "config file path")
-	versionFlag := flag.Bool("v", false, "Print the current version and exit")
 	flag.Parse()
-
-	if *versionFlag {
-		fmt.Printf("v%s\nbuilded at: %s\ncommit hash: %s\n", version, date, commit)
-		os.Exit(0)
-	}
 
 	if *configPath != "" {
 		if _, err := os.Stat(*configPath); err != nil {

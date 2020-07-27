@@ -27,7 +27,9 @@ func flushEvents() {
 	for {
 		select {
 		case eventName := <-startChannel:
-			mainLog("receiving event %s", eventName)
+			if isDebug() {
+				mainLog("Receiving event %s", eventName)
+			}
 		default:
 			return
 		}
@@ -45,24 +47,35 @@ func start() {
 	go func() {
 		for {
 			loopIndex++
-			mainLog("Waiting (loop %d)...", loopIndex)
+			if isDebug() {
+				mainLog("Waiting (loop %d)...", loopIndex)
+			}
 			eventName := <-startChannel
 
-			mainLog("receiving first event %s", eventName)
-			mainLog("sleeping for %d milliseconds", buildDelay)
+			if isDebug() {
+				mainLog("Receiving first event %s", eventName)
+			}
+			if isDebug() {
+				mainLog("Sleeping for %d milliseconds...", buildDelay)
+			}
 			time.Sleep(buildDelay * time.Millisecond)
-			mainLog("flushing events")
+			if isDebug() {
+				mainLog("Flushing events")
+			}
 
 			flushEvents()
 
 			mainLog("Started! (%d Goroutines)", runtime.NumGoroutine())
 			err := removeBuildErrorsLog()
 			if err != nil {
-				mainLog(err.Error())
+				if isDebug() {
+					mainLog(err.Error())
+				}
 			}
 
 			buildFailed := false
 			if shouldRebuild(eventName) {
+				mainLog("Rebuilding due to %v...", eventName)
 				errorMessage, ok := build()
 				if !ok {
 					buildFailed = true
@@ -72,15 +85,15 @@ func start() {
 					}
 					createBuildErrorsLog(errorMessage)
 				}
-			}
 
-			if !buildFailed {
-				if started {
-					stopChannel <- true
+				if !buildFailed {
+					if started {
+						stopChannel <- true
+					}
+					run()
+					started = true
 				}
-				run()
 			}
-			started = true
 			mainLog(strings.Repeat("-", 20))
 		}
 	}()
@@ -90,6 +103,8 @@ func init() {
 	startChannel = make(chan string, 1000)
 	stopChannel = make(chan bool)
 }
+
+const maxPrefixLength = 7
 
 func initLogFuncs() {
 	mainLog = newLogFunc("main", true)
@@ -127,8 +142,9 @@ func Start() {
 	done = make(chan bool)
 
 	initLimit()
+	initLogFuncs() // Initialize log functions with default settings for initSettings to use
 	initSettings()
-	initLogFuncs()
+	initLogFuncs() // Repeat after reading config file
 	initFolders()
 	setEnvVars()
 	watch()
