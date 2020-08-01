@@ -88,51 +88,38 @@ func loadEnvSettings() {
 }
 
 func loadRunnerConfigSettings() {
-
 	cfgPath := configPath()
-
 	if _, err := os.Stat(cfgPath); err != nil {
-		mainLog("Error opening config file %v: %v", cfgPath, err)
-		os.Exit(1)
-	}
-
-	mainLog("Loading settings from %s", cfgPath)
-
-	file, err := ioutil.ReadFile(cfgPath)
-
-	if err != nil {
-		mainLog("Error reading config file %v: %v", cfgPath, err)
-		os.Exit(1)
-	}
-
-	var givenSettings map[string]string
-
-	yaml.Unmarshal(file, &givenSettings)
-
-	//if givenSettings["version"] == "" {
-	//	log.Fatalln("no version was set on config yaml file.")
-	//}
-
-	for key, value := range givenSettings {
-		if key == "ignored" {
-			// Allow old "ignored" setting to be an alias of "ignore".
-			key = "ignore"
-		}
-
-		if _, ok := settings[key]; !ok {
-			mainLog("Unknown setting: %s", key)
+		mainLog("No config file found at %q. Using default settings", cfgPath)
+	} else {
+		mainLog("Loading settings from %q", cfgPath)
+		file, err := ioutil.ReadFile(cfgPath)
+		if err != nil {
+			mainLog("Error reading config file %q: %v", cfgPath, err)
 			os.Exit(1)
 		}
-
-		if key == "colors" || key == "debug" {
-			if value == "1" {
-				value = "true"
+		var givenSettings map[string]string
+		yaml.Unmarshal(file, &givenSettings)
+		//if givenSettings["version"] == "" {
+		//	log.Fatalln("no version was set on config yaml file.")
+		//}
+		for key, value := range givenSettings {
+			if key == "ignored" {
+				// Allow old "ignored" setting to be an alias of "ignore".
+				key = "ignore"
 			}
+			if _, ok := settings[key]; !ok {
+				mainLog("Unknown setting: %q", key)
+				os.Exit(1)
+			}
+			if key == "colors" || key == "debug" {
+				if value == "1" {
+					value = "true"
+				}
+			}
+			settings[key] = value
 		}
-
-		settings[key] = value
 	}
-
 }
 
 func initSettings() {

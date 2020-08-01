@@ -3,15 +3,15 @@ package runner
 import "testing"
 
 func TestLogColor(t *testing.T) {
-	test := []struct{
+	test := []struct {
 		color    string
 		expected string
 	}{
-		{color: "main", expected: "36" },
-		{color: "build", expected: "33" },
-		{color: "runner", expected: "32" },
-		{color: "watcher", expected: "35" },
-		{color: "app", expected: "" },
+		{color: "main", expected: "36"},
+		{color: "build", expected: "33"},
+		{color: "runner", expected: "32"},
+		{color: "watcher", expected: "35"},
+		{color: "app", expected: ""},
 	}
 
 	for _, v := range test {
@@ -21,4 +21,3 @@ func TestLogColor(t *testing.T) {
 		}
 	}
 }
-

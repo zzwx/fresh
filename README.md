@@ -1,25 +1,32 @@
 # Fresh
 
-Fresh is a command-line tool that builds and (re)starts your web application every time you save a Go or template file or any desired files you specify using configuration.
+[Fresh](https://github.com/zzwx/fresh) is a command-line tool that builds and (re)starts your written in Go application, including a web app, every time you save a `.go` or template file or any desired files you specify using configuration.
 
 It was forked from [fresh](https://github.com/gravityblast/fresh) because the author [Andrea Franz](http://gravityblast.com) set it as unmaintained.
 One of the later forks was named `fresher`, and I pulled it from [Roger Russel's](https://github.com/roger-russel/fresher.git) repo.
 Then I renamed it back to **fresh** because I don't see a reason why not. I'm used to the name, and I can simply replace original fresh
 with my own and don't think about it.
 
-Fresh can be useful on Windows vs `go run` because of executable is built at one location, causing the Windows Firewall to bother only once with its popup window. 
+After installing with `go get https://github.com/zzwx/fresh`, fresh can be started as simply `fresh` even without any configuration files in any folder containing a Go app.
+It will watch for file events, and every time you create / modify or delete a file it will build and restart the application.
 
-This fork is particularly addressing the following goals:
+If `go build` returns an error, it will create a log file in the `./tmp` (configurable) folder and keep watching, attempting to rebuild. It will also attempt to kill previously created processes.
 
-* Work with any **folder separator**, so that one configuration file acts the same way on different platforms.
-* Allow quotes `"` to surround names in the list of folders, and file extensions for more control over spaces and commas in file names.
-* Allow patterns like `*` and `**` in the list of "ignore" as well as other pattern symbols, defined by [filepath.Match](https://pkg.go.dev/path/filepath?tab=doc#Match) and [doublestar](https://github.com/bmatcuk/doublestar) for `**`.
-* More control over ignoring:
+Fresh can be useful when building web apps on Windows versus `go run .` because the executable is not built at a temporary location, so Windows Firewall bothers only once with its popup window.
+
+This fork aims to:
+
+* Maintain `fresh`.
+* Work with any **folder separator**, so that one configuration file can be used on different platforms without modification. Use '/' as path separator freely.
+* Allow quotes `"` to surround names in the list of folders and files to ignore, and file extensions for more control over possible spaces and commas in the file names.
+* Allow patterns like `*` and `**` in the list of folders and files to ignore as well as other pattern symbols, defined by [filepath.Match](https://pkg.go.dev/path/filepath?tab=doc#Match) and [doublestar](https://github.com/bmatcuk/doublestar) for `**`.
+* Make default configuration file `./fresh.yaml` **optional** - "fresh" any folder with default configuration.
+* Have more control over ignoring:
     * Ignore sub-folders but not the folder itself and nor sub-sub-folders (using `assets/*`).
     * Ignore sub-folders and sub-sub-folders but not the folder itself (using `assets/**`).
-    * Ignore wild-carded patterns (`bootstrap-*/**`)
-* Allow individual files to be ignored, because if a file type is monitored, but one particular file of that type shouldn't be (for instance, because it's auto-generated), there was no way to configure that.
-* Allow for `ignore` (now default) in the settings (it just bothered me to use past tense). `ignored` still works for backward-compatibility.
+    * Ignore wild-carded patterns (like `bootstrap-*/**`).
+    * Ignore individual files to be ignored. If a file type is monitored, but a particular file of that type shouldn't (for instance, because it's auto-generated), there was no way to configure that.
+* Use `ignore` instead of `ignored` in the settings. `ignored` still works for backward-compatibility.
 * Set `debug` setting `false` to remove unnecessary output.
 * Check for wrong settings names.
 
@@ -67,10 +74,6 @@ Start fresh:
 
     fresh
 
-Fresh will watch for file events, and every time you create/modify/delete a file it will build and restart the application.
-
-If `go build` returns an error, it will log it in the "tmp" folder.
-
 `fresh` uses `./.fresh.yaml` for configuration by default, but you may specify an alternative config file path using `-c`:
 
 ```bash
@@ -80,26 +83,26 @@ fresh -c other.yaml
 Here is a sample config file with the default settings:
 
 ```yaml
-version: 1 # [not required]
-root: . # [required] the root folder where the project is
-main_path: # the folder where main.go is if it was not in root. example: %root%/cmd/
-tmp_path: ./tmp
-build_name: runner-build
+version: 1 #
+root: . # The root folder where the project is
+main_path: # The folder where main.go is if not in root. example: ./cmd/
+tmp_path: ./tmp # Default temporary folder in which the executable file will be generated and run from
+build_name: runner-build # File name that will be built. exe will be automatically appended on Windows
 build_args: # build args
-build_log: runner-build-errors.log
-valid_ext: .go, .tpl, .tmpl, .html # the extension that it will be watching
-no_rebuild_ext: .tpl, .tmpl, .html
-ignore: # ignore both folders and files
+build_log: runner-build-errors.log # log file name for build errors
+valid_ext: .go, .tpl, .tmpl, .html # the extension for watching for changes
+no_rebuild_ext: .tpl, .tmpl, .html # the extensions to ignore rebuilding
+ignore: # ignore watching of both folders and individual files. Use * or ** and multiple lines for readability 
   assets,
   tmp
-build_delay: 600
+build_delay: 600 # ms to wait after change before attempting to rebuild.
 colors: true
 log_color_main: cyan
 log_color_build: yellow
 log_color_runner: green
 log_color_watcher: magenta
 log_color_app:
-debug: true
+debug: true # set to false to make fresh less verbose
 ```
 
 More examples can be seen [here](https://github.com/zzwx/fresh/tree/master/docs/_examples)
