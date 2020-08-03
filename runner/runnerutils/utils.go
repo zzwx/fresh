@@ -2,6 +2,7 @@ package runnerutils
 
 import (
 	"bufio"
+	"github.com/zzwx/fresh/runner"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -9,25 +10,26 @@ import (
 	"path/filepath"
 )
 
-var logFilePath string
-
 func init() {
-	root := os.Getenv("RUNNER_WD")
-	tmpPath := os.Getenv("RUNNER_TMP_PATH")
-	fileName := os.Getenv("RUNNER_BUILD_LOG")
-	logFilePath = filepath.Join(root, tmpPath, fileName)
 }
 
-// Returns true if a build error file exists in the tmp folder.
+func LogFilePath() string {
+	wd := os.Getenv(runner.EnvPrefix + "WD") // RUNNER_WD
+	tmpPath := os.Getenv(runner.EnvPrefix + "TMP_PATH")
+	fileName := os.Getenv(runner.EnvPrefix + "BUILD_LOG")
+	return filepath.Clean(filepath.Join(wd, tmpPath, fileName))
+}
+
+// HasErrors returns true if a build error file exists in the tmp folder.
 func HasErrors() bool {
-	if _, err := os.Stat(logFilePath); err == nil {
+	if _, err := os.Stat(LogFilePath()); err == nil {
 		return true
 	}
 
 	return false
 }
 
-// It renders an error page with the build error message.
+// RenderError renders an error page with the build error message.
 func RenderError(w http.ResponseWriter) {
 	data := map[string]interface{}{
 		"Output": readErrorFile(),
@@ -39,7 +41,7 @@ func RenderError(w http.ResponseWriter) {
 }
 
 func readErrorFile() string {
-	file, err := os.Open(logFilePath)
+	file, err := os.Open(LogFilePath())
 	if err != nil {
 		return ""
 	}

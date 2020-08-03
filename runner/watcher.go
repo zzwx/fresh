@@ -30,7 +30,13 @@ func watchFolder(path string) {
 		}
 	}()
 
-	watcherLog("Watching %s", path)
+	ppath := path
+	if p, err := filepath.Rel("./", path); err != nil {
+		ppath = p
+	}
+
+	watcherLog("Watching %s", ppath)
+
 	err = watcher.Watch(path)
 
 	if err != nil {

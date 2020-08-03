@@ -5,7 +5,7 @@ import (
 )
 
 func TestIsWatchedExt(t *testing.T) {
-	settings["valid_ext"] = `.go, "", .tpl, ".tmpl", .html, ".g,m"`
+	settings.ValidExt = `.go, "", .tpl, ".tmpl", .html, ".g,m"`
 	tests := []struct {
 		file     string
 		expected bool
@@ -30,9 +30,9 @@ func TestIsWatchedExt(t *testing.T) {
 }
 
 func TestShouldRebuild(t *testing.T) {
-	settings["valid_ext"] = ".go, .tpl, .tmpl, .html, .ts, .scss, .css, .tsx, .json, .txt"
-	settings["no_rebuild_ext"] = ".tpl, .tmpl, .html"
-	settings["ignore"] = "src\\main\\script.ts, build\\bundle.js, tmp\\*, src\\main\\node_modules, src\\main\\node_modules\\*"
+	settings.ValidExt = ".go, .tpl, .tmpl, .html, .ts, .scss, .css, .tsx, .json, .txt"
+	settings.NoRebuildExt = ".tpl, .tmpl, .html"
+	settings.Ignore = "src/main\\script.ts, build\\bundle.js, tmp\\*, src\\main\\node_modules, src\\main\\node_modules\\*"
 	tests := []struct {
 		eventName string
 		expected  bool
@@ -60,7 +60,7 @@ func TestShouldRebuild(t *testing.T) {
 }
 
 func TestIsIgnored(t *testing.T) {
-	settings["ignore"] = "a, b, b/*, s/*, m/**, tmp, tmp/*, build/file.ts, assets/*, app/controllers/, \"app/controllers/*\", app/views/*, \"dir with space\", \"dir\\sub\""
+	settings.Ignore = "a, b, b/*, s/*, m/**, tmp, tmp/*, build/file.ts, assets/*, app/controllers/, \"app/controllers/*\", app/views/*, \"dir with space\", \"dir\\sub\""
 	tests := []struct {
 		dir      string
 		expected bool

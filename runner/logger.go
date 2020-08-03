@@ -15,14 +15,14 @@ type logFunc func(string, ...interface{})
 var logger = log.New(colorable.NewColorableStderr(), "", 0)
 
 func resetTermColors() {
-	if settings["colors"] == "true" {
+	if settings.Colors {
 		logger.Printf(fmt.Sprintf("\033[%sm", colors["reset"]))
 	}
 }
 
 func newLogFunc(prefix string, withEscape bool) func(string, ...interface{}) {
 	var color, white, reset string
-	if settings["colors"] == "true" {
+	if settings.Colors {
 		lColor := logColor(prefix)
 		if lColor != "" {
 			color = fmt.Sprintf("\033[%sm", lColor)

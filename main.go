@@ -19,17 +19,34 @@ import (
 )
 
 func main() {
-	configPath := flag.String("c", "", "config file path")
+	configPath := flag.String("c", "", fmt.Sprintf("config file path. Default is %q", runner.DefaultConfigPath))
+	generate := flag.Bool("g", false, fmt.Sprintf("generate a sample settings file either at %q or at specified by -c location", runner.DefaultConfigPath))
+	env := flag.String("e", "", fmt.Sprintf("environment variables prefix. %q is a default prefix", runner.EnvPrefix))
+
 	flag.Parse()
+	if *env != "" {
+		runner.EnvPrefix = *env
+		fmt.Printf("Environment variables prefix set to %q\n", runner.EnvPrefix)
+	}
 
 	if *configPath != "" {
 		if _, err := os.Stat(*configPath); err != nil {
-			fmt.Printf("Can't find config file %q\n", *configPath)
-			os.Exit(1)
+			if *generate {
+				runner.SaveRunnerConfigSettings(*configPath)
+			} else {
+				fmt.Printf("Can't find config file %q\n", *configPath)
+				os.Exit(1)
+			}
 		} else {
-			os.Setenv("RUNNER_CONFIG_PATH", *configPath)
+			os.Setenv(runner.EnvPrefix+"CONFIG_PATH", *configPath) // RUNNER_CONFIG_PATH
+		}
+	} else {
+		if *generate {
+			runner.SaveRunnerConfigSettings(runner.DefaultConfigPath)
 		}
 	}
 
-	runner.Start()
+	if !*generate {
+		runner.Start()
+	}
 }

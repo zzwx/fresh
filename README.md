@@ -29,6 +29,10 @@ This fork aims to:
 * Use `ignore` instead of `ignored` in the settings. `ignored` still works for backward-compatibility.
 * Set `debug` setting `false` to remove unnecessary output.
 * Check for wrong settings names.
+* Fix multi-line app output that skips the `time app |` header.
+* Allow a trailing comma to be in the settings expecting lists without treating the last entry as an empty string. 
+* Set a prefix for environment variables that are set using `fresh -e`.
+* Generate a `./fresh.yaml` containing all default settings using `fresh -g`.
 
 Converting to `yaml` configuration allows for multi-line values (with at least one space padding on every line) to be used for long option values.
 Also, comments are possible after `#` symbol.
@@ -64,21 +68,50 @@ To emulate full ignore similar to the way it worked in original `fresh`, simply 
 
 ## Installation
 
-    go get github.com/zzwx/fresh
+```bash
+$ go get github.com/zzwx/fresh
+```
 
 ## Usage
 
-    cd /path/to/myapp
-
-Start fresh:
-
-    fresh
-
-`fresh` uses `./.fresh.yaml` for configuration by default, but you may specify an alternative config file path using `-c`:
+Start fresh with default configuration file location:
 
 ```bash
-fresh -c other.yaml
+$ fresh
 ```
+
+Print a help:
+
+```bash
+$ fresh -help
+Usage of fresh:
+  -c string
+        config file path. Default is "./.fresh.yaml"
+  -e string
+        environment variables prefix. "RUNNER_" is a default prefix
+  -g    generate a sample settings file either at "./.fresh.yaml" or at specified by -c location
+```
+
+`fresh` uses `./.fresh.yaml` for configuration file location by default. If the file is not found, default settings will be used.
+An alternative config file path can be specified using `-c`:
+
+```bash
+$ fresh -c ./other.yaml
+```
+
+To generate a default `./.fresh.yaml`, call fresh with `-g` flag. It can be combined with the `-c` to specify non-default output file name.
+
+```bash
+$ fresh -g
+$ fresh -g -c ./other.yaml
+```
+
+To set a prefix for environment variables that are used (`RUNNER_` is default):
+
+```bash
+$ fresh -e NEWRUNNER_
+```
+ 
 
 Here is a sample config file with the default settings:
 

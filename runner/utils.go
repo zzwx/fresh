@@ -33,8 +33,8 @@ func isTmpDir(path string) bool {
 }
 
 func isIgnored(path string) bool {
-	cleanPath := filepath.Clean(path)
-	r := csv.NewReader(strings.NewReader(settings["ignore"]))
+	path = filepath.Clean(path)
+	r := csv.NewReader(strings.NewReader(settings.Ignore))
 	r.LazyQuotes = true
 	r.Comma = ','
 	r.TrimLeadingSpace = true
@@ -48,7 +48,7 @@ func isIgnored(path string) bool {
 		}
 		for i := 0; i < len(record); i++ {
 			cleanIgnore := filepath.Clean(strings.TrimSpace(record[i])) // trim surrounding spaces
-			m, err := doublestar.PathMatch(cleanIgnore, cleanPath)
+			m, err := doublestar.PathMatch(cleanIgnore, path)
 			if err == nil && m {
 				return true
 			}
@@ -67,7 +67,7 @@ func isWatchedExt(path string) bool {
 
 	ext := filepath.Ext(path)
 
-	r := csv.NewReader(strings.NewReader(settings["valid_ext"]))
+	r := csv.NewReader(strings.NewReader(settings.ValidExt))
 	r.LazyQuotes = true
 	r.Comma = ','
 	r.TrimLeadingSpace = true
@@ -129,7 +129,7 @@ func shouldRebuild(eventName string) bool {
 	}
 	ext := filepath.Ext(fileName)
 
-	r := csv.NewReader(strings.NewReader(settings["no_rebuild_ext"]))
+	r := csv.NewReader(strings.NewReader(settings.NoRebuildExt))
 	r.LazyQuotes = true
 	r.Comma = ','
 	r.TrimLeadingSpace = true

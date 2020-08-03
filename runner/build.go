@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 func build() (string, bool) {
@@ -14,7 +15,7 @@ func build() (string, bool) {
 		return "", true
 	}
 
-	cmd := exec.Command("go", "build", "-o", buildPath(), root()+mainPath())
+	cmd := exec.Command("go", "build", "-o", buildPath(), filepath.Join(root(), mainPath()))
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {

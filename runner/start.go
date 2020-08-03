@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"reflect"
 	"runtime"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -120,13 +122,30 @@ func setEnvVars() {
 	os.Setenv("DEV_RUNNER", "1")
 	wd, err := os.Getwd()
 	if err == nil {
-		os.Setenv("RUNNER_WD", wd)
+		os.Setenv(EnvPrefix+"WD", wd) // RUNNER_WD
+	}
+	t := reflect.TypeOf(Settings{})
+	v := reflect.ValueOf(settings)
+	for i := 0; i < t.NumField(); i++ {
+		keyName, _, noenv := tagDetails(t.Field(i).Tag)
+		if keyName != "" && !noenv {
+			envKey := fmt.Sprintf("%s%s", EnvPrefix, strings.ToUpper(keyName))
+			field := v.Field(i)
+			err = nil
+			if field.Kind() == reflect.String {
+				err = os.Setenv(envKey, field.String())
+			} else if field.Kind() == reflect.Bool {
+				err = os.Setenv(envKey, strconv.FormatBool(field.Bool()))
+			} else if field.Kind() == reflect.Uint {
+				err = os.Setenv(envKey, strconv.FormatUint(field.Uint(), 10))
+			}
+			if err != nil {
+				fmt.Printf("Error setting %q to %v due to %v", envKey, field.String(), err)
+			}
+			//runnerLog("%v set to %q", envKey, os.Getenv(envKey))
+		}
 	}
 
-	for k, v := range settings {
-		key := strings.ToUpper(fmt.Sprintf("%s%s", envSettingsPrefix, k))
-		os.Setenv(key, v)
-	}
 }
 
 func termHandler() {

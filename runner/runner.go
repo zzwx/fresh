@@ -47,7 +47,9 @@ func run() bool {
 		runnerLog("Killing PID %d...", pid)
 
 		if err := cmd.Process.Kill(); err != nil {
-			runnerLog("Killing PID %d failed: %v", pid, err)
+			if isDebug() {
+				runnerLog("Killing PID %d failed: %v", pid, err)
+			}
 		}
 
 		if exiting == true {
@@ -55,7 +57,9 @@ func run() bool {
 			done <- true
 		}
 
-		runnerLog("Killed")
+		if isDebug() {
+			runnerLog("Killed")
+		}
 		cmd.Process.Wait()
 
 	}()
