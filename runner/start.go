@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"reflect"
 	"runtime"
 	"strconv"
@@ -30,7 +31,7 @@ func flushEvents() {
 		select {
 		case eventName := <-startChannel:
 			if isDebug() {
-				mainLog("Receiving event %s", eventName)
+				mainLog("Event %s", eventName)
 			}
 		default:
 			return
@@ -55,7 +56,7 @@ func start() {
 			eventName := <-startChannel
 
 			if isDebug() {
-				mainLog("Receiving first event %s", eventName)
+				mainLog("First event: %s", eventName)
 			}
 			if isDebug() {
 				mainLog("Sleeping for %d milliseconds...", buildDelay)
@@ -79,7 +80,7 @@ func start() {
 
 			buildFailed := false
 			if shouldRebuild(eventName) {
-				mainLog("Rebuilding due to %v...", eventName)
+				mainLog("Rebuilding due to \"%v\"...", eventName)
 				errorMessage, ok := build()
 				if !ok {
 					buildFailed = true
@@ -124,6 +125,7 @@ func setEnvVars() {
 	if err == nil {
 		os.Setenv(EnvPrefix+"WD", wd) // RUNNER_WD
 	}
+	os.Setenv(EnvPrefix+"CONFIG_PATH", ConfigPath)
 	t := reflect.TypeOf(Settings{})
 	v := reflect.ValueOf(settings)
 	for i := 0; i < t.NumField(); i++ {
@@ -170,7 +172,7 @@ func Start() {
 	setEnvVars()
 	watch()
 	start()
-	startChannel <- "/"
+	startChannel <- string(filepath.Separator)
 
 	<-done
 }

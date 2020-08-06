@@ -33,6 +33,8 @@ This fork aims to:
 * Allow a trailing comma to be in the settings expecting lists without treating the last entry as an empty string. 
 * Set a prefix for environment variables that are set using `fresh -e`.
 * Generate a `./fresh.yaml` containing all default settings using `fresh -g`.
+* Use **module path** as `main_path` instead of file path to let Go build main packages in sub-directories with enabled modules mode which has become a standard.
+* Specify `run_args` and `build_args` separately.
 
 Converting to `yaml` configuration allows for multi-line values (with at least one space padding on every line) to be used for long option values.
 Also, comments are possible after `#` symbol.
@@ -66,6 +68,32 @@ In short,
 
 To emulate full ignore similar to the way it worked in original `fresh`, simply comma-separate `a` and `a/**`, which will make both the folder and all the sub and sub-sub folders ignored.
 
+## main_path
+
+For the `main_path` to accept a sub-directory, it should be in a form of a module's exact path rather than a file path.
+
+For example, if your go.mod lists the module as: 
+
+```
+module something.com/your/path
+``` 
+
+And your sub-directory containing `package main` is under **`cmd`**, then set `main_path` as following: 
+
+```yaml
+main_path: "something.com/your/path/cmd"
+``` 
+
+If you don't do that, the error will show which is hard to search and get answers to:
+
+```bash
+can't load package: package cmd is not in GOROOT (...)
+```
+
+### TODO: Attempt to leverage `go list -m` for relative paths
+
+For `main_path` to work as a relative path, `fresh` will have to grab the modules' main path.  
+ 
 ## Installation
 
 ```bash
@@ -117,25 +145,26 @@ Here is a sample config file with the default settings:
 
 ```yaml
 version: 1 #
-root: . # The root folder where the project is
-main_path: # The folder where main.go is if not in root. example: ./cmd/
+root: . # Root folder where the project is
+main_path: # Module-style-path where main module is if not in root. example: example.com/name/cmd/
 tmp_path: ./tmp # Default temporary folder in which the executable file will be generated and run from
 build_name: runner-build # File name that will be built. exe will be automatically appended on Windows
-build_args: # build args
-build_log: runner-build-errors.log # log file name for build errors
-valid_ext: .go, .tpl, .tmpl, .html # the extension for watching for changes
-no_rebuild_ext: .tpl, .tmpl, .html # the extensions to ignore rebuilding
-ignore: # ignore watching of both folders and individual files. Use * or ** and multiple lines for readability 
+build_args: # Build args
+run_args: # Runtime args 
+build_log: runner-build-errors.log # Log file name for build errors
+valid_ext: .go, .tpl, .tmpl, .html # Extensions list for watching for changes
+no_rebuild_ext: .tpl, .tmpl, .html # Extensions list to ignore rebuilding
+ignore: # Ignore watching of both folders and individual files. Use * or ** and multiple lines for readability 
   assets,
-  tmp
-build_delay: 600 # ms to wait after change before attempting to rebuild.
+  tmp, # Trailing comma will be auto-truncated. 
+build_delay: 600 # Nanoseconds to wait after change before attempting to rebuild.
 colors: true
 log_color_main: cyan
 log_color_build: yellow
 log_color_runner: green
 log_color_watcher: magenta
 log_color_app:
-debug: true # set to false to make fresh less verbose
+debug: true # Set to false to make fresh less verbose
 ```
 
 More examples can be seen [here](https://github.com/zzwx/fresh/tree/master/docs/_examples)

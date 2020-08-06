@@ -5,17 +5,21 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"path/filepath"
+	"strings"
 )
 
 func build() (string, bool) {
-	buildLog("Building...")
+	args := []string{
+		"go", "build", "-o", buildPath(), mainPath(),
+	}
+	args = append(args, strings.Fields(buildArgs())...)
+	buildLog("Building... %v", args)
 
 	if mustUseDelve() {
 		return "", true
 	}
 
-	cmd := exec.Command("go", "build", "-o", buildPath(), filepath.Join(root(), mainPath()))
+	cmd := exec.Command("go", args[1:]...) // [1: skips the "go" in args list
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {

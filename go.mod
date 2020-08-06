@@ -9,6 +9,6 @@ require (
 	github.com/howeyc/fsnotify v0.9.0
 	github.com/mattn/go-colorable v0.1.7
 	github.com/valyala/fasthttp v1.9.0
-	golang.org/x/sys v0.0.0-20200802091954-4b90ce9b60b3 // indirect
+	golang.org/x/sys v0.0.0-20200806125547-5acd03effb82 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 )

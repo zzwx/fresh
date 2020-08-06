@@ -16,7 +16,7 @@ func run() bool {
 	if mustUseDelve() {
 		cmd = exec.Command("dlv", strings.Fields(delveArgs())...)
 	} else {
-		cmd = exec.Command(buildPath(), strings.Fields(buildArgs())...)
+		cmd = exec.Command(buildPath(), strings.Fields(runArgs())...)
 	}
 
 	stderr, err := cmd.StderrPipe()

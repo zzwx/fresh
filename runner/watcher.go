@@ -45,8 +45,8 @@ func watchFolder(path string) {
 }
 
 func watch() {
-	root := root()
-	filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+	r := root()
+	filepath.Walk(r, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() && !isTmpDir(path) {
 			if len(path) > 1 && strings.HasPrefix(filepath.Base(path), ".") {
 				return filepath.SkipDir
@@ -56,13 +56,12 @@ func watch() {
 				if isDebug() {
 					watcherLog("Ignoring %s", path)
 				}
-				// Not recursively ignoring anymore
-				//return filepath.SkipDir
+				// Not automatically ignoring subdirectories anymore. Ignore has to be explicit.
+				// return filepath.SkipDir
 			} else {
 				watchFolder(path)
 			}
 		}
-
 		return err
 	})
 }

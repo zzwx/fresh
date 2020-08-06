@@ -28,11 +28,12 @@ type Settings struct {
 	TmpPath         string `yaml:"tmp_path"`
 	BuildName       string `yaml:"build_name"`
 	BuildArgs       string `yaml:"build_args"`
+	RunArgs         string `yaml:"run_args"`
 	BuildLog        string `yaml:"build_log"`
 	ValidExt        string `yaml:"valid_ext"`
 	NoRebuildExt    string `yaml:"no_rebuild_ext"`
 	Ignore          string `yaml:"ignore"`
-	BuildDelay      uint   `yaml:"build_delay"`
+	BuildDelay      uint   `yaml:"build_delay"` // Nanoseconds
 	Colors          bool   `yaml:"colors"`
 	LogColorMain    string `yaml:"log_color_main"`
 	LogColorBuild   string `yaml:"log_color_build"`
@@ -55,6 +56,7 @@ func init() {
 	settings.TmpPath = "./tmp"
 	settings.BuildName = "runner-build"
 	// settings.BuildArgs
+	// settings.RunArgs
 	settings.BuildLog = "runner-build-errors.log"
 	settings.ValidExt = ".go, .tpl, .tmpl, .html"
 	settings.NoRebuildExt = ".tpl, .tmpl, .html"
@@ -170,6 +172,10 @@ func tagDetails(field reflect.StructTag) (keyName string, omit bool, noenv bool)
 }
 
 func loadEnvSettings() {
+	envKey := EnvPrefix + "CONFIG_PATH"
+	if value := os.Getenv(envKey); value != "" {
+		ConfigPath = value
+	}
 	t := reflect.TypeOf(Settings{})
 	v := reflect.ValueOf(&settings).Elem()
 	for i := 0; i < t.NumField(); i++ {
@@ -292,7 +298,9 @@ func root() string {
 }
 
 func mainPath() string {
-	return filepath.Clean(settings.MainPath)
+	// MainPath is representing a module full path, not a file path
+	// No need to clean it
+	return settings.MainPath
 }
 
 func tmpPath() string {
@@ -309,6 +317,10 @@ func buildPath() string {
 
 func buildArgs() string {
 	return settings.BuildArgs
+}
+
+func runArgs() string {
+	return settings.RunArgs
 }
 
 func buildErrorsFileName() string {
