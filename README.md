@@ -35,6 +35,7 @@ This fork aims to:
 * Generate a `./fresh.yaml` containing all default settings using `fresh -g`.
 * Use **module path** as `main_path` instead of file path to let Go build main packages in sub-directories with enabled modules mode which has become a standard.
 * Specify `run_args` and `build_args` separately.
+  * `build_args` example: `-race`.
 
 Converting to `yaml` configuration allows for multi-line values (with at least one space padding on every line) to be used for long option values.
 Also, comments are possible after `#` symbol.
@@ -76,7 +77,7 @@ For example, if your go.mod lists the module as:
 
 ```
 module something.com/your/path
-``` 
+```
 
 And your sub-directory containing `package main` is under **`cmd`**, then set `main_path` as following: 
 
@@ -139,7 +140,7 @@ To set a prefix for environment variables that are used (`RUNNER_` is default):
 ```bash
 $ fresh -e NEWRUNNER_
 ```
- 
+
 
 Here is a sample config file with the default settings:
 

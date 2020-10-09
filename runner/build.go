@@ -10,9 +10,10 @@ import (
 
 func build() (string, bool) {
 	args := []string{
-		"go", "build", "-o", buildPath(), mainPath(),
+		"go", "build", "-o", buildPath(),
 	}
 	args = append(args, strings.Fields(buildArgs())...)
+	args = append(args, mainPath())
 	buildLog("Building... %v", args)
 
 	if mustUseDelve() {
