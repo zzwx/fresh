@@ -1,13 +1,15 @@
 # Fresh
 
-[Fresh](https://github.com/zzwx/fresh) is a command-line tool that builds and (re)starts your written in Go application, including a web app, every time you save a `.go` or template file or any desired files you specify using configuration.
+[Fresh](https://github.com/zzwx/fresh) is a command-line tool for hot reload that builds and (re)starts your written in Go application, including a web app, every time you save a `.go` or template file or any desired files you specify using configuration.
+It is not aiming to gracefully shutdown the server, but rather simply restart it, killing the other process.
 
-It was forked from [fresh](https://github.com/gravityblast/fresh) because the author [Andrea Franz](http://gravityblast.com) set it as unmaintained.
-One of the later forks was named `fresher`, and I pulled it from [Roger Russel's](https://github.com/roger-russel/fresher.git) repo.
-Then I renamed it back to **fresh** because I don't see a reason why not. I'm used to the name, and I can simply replace original fresh
-with my own and don't think about it.
+## History
 
-After installing with `go get https://github.com/zzwx/fresh`, fresh can be started as simply `fresh` even without any configuration files in any folder containing a Go app.
+This fork is taken from original [fresh](https://github.com/gravityblast/fresh) because the author, [Andrea Franz](http://gravityblast.com), announced it as unmaintained.
+Several changes were pulled from the Roger Russel's [fresher](https://github.com/roger-russel/fresher.git) repository. All the authors are appropriately acknowledged using the `git` history.
+I kept the name **fresh** because it is easier to remember.
+
+After installing with `go get github.com/zzwx/fresh`, fresh can be started as simply `fresh` even without any configuration files in any folder containing a Go app.
 It will watch for file events, and every time you create / modify or delete a file it will build and restart the application.
 
 If `go build` returns an error, it will create a log file in the `./tmp` (configurable) folder and keep watching, attempting to rebuild. It will also attempt to kill previously created processes.
@@ -93,7 +95,8 @@ can't load package: package cmd is not in GOROOT (...)
 
 ### TODO: Attempt to leverage `go list -m` for relative paths
 
-For `main_path` to work as a relative path, `fresh` will have to grab the modules' main path.  
+* For `main_path` to work as a relative path, `fresh` will have to grab the modules' main path.
+* Attempt to build before watching for cases where the folder is not a go main module. 
  
 ## Installation
 
