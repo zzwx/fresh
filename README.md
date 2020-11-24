@@ -1,3 +1,5 @@
+[![github.com/zzwx/fresh](./docs/gobadge.svg)](https://pkg.go.dev/github.com/zzwx/fresh)
+
 # Fresh
 
 [Fresh](https://github.com/zzwx/fresh) is a command-line tool for hot reload that builds and (re)starts your written in Go application, including a web app, every time you save a `.go` or template file or any desired files you specify using configuration.
