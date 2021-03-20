@@ -15,12 +15,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
-
 	"github.com/zzwx/fresh/runner"
+	"os"
 )
 
-const VERSION = "1.3.1"
+const VERSION = "1.3.2"
 
 func main() {
 	var version bool
