@@ -99,6 +99,10 @@ can't load package: package cmd is not in GOROOT (...)
 
 * For `main_path` to work as a relative path, `fresh` will have to grab the modules' main path.
 * Attempt to build before watching for cases where the folder is not a go main module. 
+
+### TODO: Hash folders
+
+* Some editors save the files that haven't changed and that triggers rebuilding.
  
 ## Installation
 
