@@ -19,18 +19,25 @@ import (
 	"os"
 )
 
-const VERSION = "1.3.2"
+const VERSION = "1.3.3"
 
 func main() {
-	var version bool
-	flag.BoolVar(&version, "v", false, "")
-	flag.BoolVar(&version, "version", false, "prints current version and exits")
-	configPath := flag.String("c", "", fmt.Sprintf("config file path. Default is %q", runner.DefaultConfigPath))
-	generate := flag.Bool("g", false, fmt.Sprintf("generate a sample settings file either at %q or at specified by -c location", runner.DefaultConfigPath))
-	env := flag.String("e", "", fmt.Sprintf("environment variables prefix. %q is a default prefix", runner.EnvPrefix))
+	var version *bool
+	var help bool
+	flag.BoolVar(&help, "h", false, "print help page")
+	version = flag.Bool("version", false, "print current version and exit")
+	flag.BoolVar(version, "v", *version, "alias for -version")
 
+	configPath := flag.String("c", runner.DefaultConfigPath, fmt.Sprintf("config file path"))
+	generate := flag.Bool("generate", false, fmt.Sprintf("generate a sample settings file either at %q or at specified by -c location", runner.DefaultConfigPath))
+	flag.BoolVar(generate, "g", *generate, "alias for -generate")
+	env := flag.String("e", "", fmt.Sprintf("environment variables prefix. %q is a default prefix", runner.EnvPrefix))
 	flag.Parse()
-	if version || (len(os.Args) > 1 && os.Args[1] == "version") {
+	if help {
+		flag.Usage()
+		return
+	}
+	if *version || (len(os.Args) > 1 && os.Args[1] == "version") {
 		fmt.Println(VERSION)
 		return
 	}
@@ -45,19 +52,17 @@ func main() {
 			if *generate {
 				runner.SaveRunnerConfigSettings(*configPath)
 			} else {
-				fmt.Printf("Can't find config file %q\n", *configPath)
+				fmt.Printf("Can't find config file %q. Generate using -g\n", *configPath)
 				os.Exit(1)
 			}
 		} else {
 			os.Setenv(runner.EnvPrefix+"CONFIG_PATH", *configPath) // RUNNER_CONFIG_PATH
 		}
-	} else {
-		if *generate {
-			runner.SaveRunnerConfigSettings(runner.DefaultConfigPath)
+		if !*generate {
+			runner.Start()
 		}
-	}
-
-	if !*generate {
-		runner.Start()
+	} else {
+		fmt.Printf("Empty config path provided\n")
+		os.Exit(1)
 	}
 }

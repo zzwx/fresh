@@ -11,8 +11,8 @@ This fork is taken from original [fresh](https://github.com/gravityblast/fresh) 
 Several changes were pulled from the Roger Russel's [fresher](https://github.com/roger-russel/fresher.git) repository. All the authors are appropriately acknowledged using the `git` history.
 I kept the name **fresh** because it is easier to remember.
 
-After installing with `go get github.com/zzwx/fresh`, fresh can be started as simply `fresh` even without any configuration files in any folder containing a Go app.
-It will watch for file events, and every time you create / modify or delete a file it will build and restart the application.
+After installing with `go get github.com/zzwx/fresh`, fresh can be started as simply `fresh -g` to generate a default config file. This prevents running `fresh` on an unexpected folder.
+When `fresh` runs on a folder that contains `.fresh.yaml` (default name), it will watch for file events, and every time you create / modify or delete a file it will build and restart the application.
 
 If `go build` returns an error, it will create a log file in the `./tmp` (configurable) folder and keep watching, attempting to rebuild. It will also attempt to kill previously created processes.
 
@@ -24,7 +24,6 @@ This fork aims to:
 * Work with any **folder separator**, so that one configuration file can be used on different platforms without modification. Use '/' as path separator freely.
 * Allow quotes `"` to surround names in the list of folders and files to ignore, and file extensions for more control over possible spaces and commas in the file names.
 * Allow patterns like `*` and `**` in the list of folders and files to ignore as well as other pattern symbols, defined by [filepath.Match](https://pkg.go.dev/path/filepath?tab=doc#Match) and [doublestar](https://github.com/bmatcuk/doublestar) for `**`.
-* Make default configuration file `./fresh.yaml` **optional** - "fresh" any folder with default configuration.
 * Have more control over ignoring:
     * Ignore sub-folders but not the folder itself and nor sub-sub-folders (using `assets/*`).
     * Ignore sub-folders and sub-sub-folders but not the folder itself (using `assets/**`).
@@ -110,6 +109,10 @@ can't load package: package cmd is not in GOROOT (...)
 $ go get github.com/zzwx/fresh
 ```
 
+## Changelog
+
+* `1.3.3` - `fresh` won't run anymore on a folder that has no `.fresh.yaml` in it to prevent accidental execution. 
+
 ## Usage
 
 Start fresh with default configuration file location:
@@ -124,10 +127,16 @@ Print a help:
 $ fresh -help
 Usage of fresh:
   -c string
-        config file path. Default is "./.fresh.yaml"
+        config file path (default "./.fresh.yaml")
   -e string
         environment variables prefix. "RUNNER_" is a default prefix
-  -g    generate a sample settings file either at "./.fresh.yaml" or at specified by -c location
+  -g    alias for -generate
+  -generate
+        generate a sample settings file either at "./.fresh.yaml" or at specified by -c location
+  -h    print help page
+  -v    alias for -version
+  -version
+        print current version and exit
 ```
 
 `fresh` uses `./.fresh.yaml` for configuration file location by default. If the file is not found, default settings will be used.
