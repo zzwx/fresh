@@ -1,4 +1,4 @@
-[![github.com/zzwx/fresh](./docs/gobadge.svg)](https://pkg.go.dev/github.com/zzwx/fresh)
+[![https://github.com/zzwx/fresh](./docs/gobadge.svg)](https://pkg.go.dev/github.com/zzwx/fresh)
 
 # Fresh
 
