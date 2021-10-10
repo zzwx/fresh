@@ -11,7 +11,7 @@ This fork is taken from original [fresh](https://github.com/gravityblast/fresh) 
 Several changes were pulled from the Roger Russel's [fresher](https://github.com/roger-russel/fresher.git) repository. All the authors are appropriately acknowledged using the `git` history.
 I kept the name **fresh** because it is easier to remember.
 
-After installing with `go get github.com/zzwx/fresh`, fresh can be started as simply `fresh -g` to generate a default config file. This prevents running `fresh` on an unexpected folder.
+After installing with `go install github.com/zzwx/fresh@latest`, fresh can be started as simply `fresh -g` to generate a default config file. This prevents running `fresh` on an unexpected folder.
 When `fresh` runs on a folder that contains `.fresh.yaml` (default name), it will watch for file events, and every time you create / modify or delete a file it will build and restart the application.
 
 If `go build` returns an error, it will create a log file in the `./tmp` (configurable) folder and keep watching, attempting to rebuild. It will also attempt to kill previously created processes.
@@ -106,7 +106,7 @@ can't load package: package cmd is not in GOROOT (...)
 ## Installation
 
 ```bash
-$ go get github.com/zzwx/fresh
+$ go install github.com/zzwx/fresh@latest
 ```
 
 ## Changelog
