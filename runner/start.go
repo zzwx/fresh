@@ -61,7 +61,7 @@ func start() {
 			if isDebug() {
 				mainLog("Sleeping for %d milliseconds...", buildDelay)
 			}
-			time.Sleep(buildDelay * time.Millisecond)
+			time.Sleep(buildDelay * time.Nanosecond)
 			if isDebug() {
 				mainLog("Flushing events")
 			}
