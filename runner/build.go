@@ -4,23 +4,25 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"strings"
 )
 
 func build() (string, bool) {
-	args := []string{
-		"go", "build", "-o", buildPath(),
-	}
-	args = append(args, strings.Fields(buildArgs())...)
-	args = append(args, mainPath())
-	buildLog("Building... %v", args)
-
 	if mustUseDelve() {
 		return "", true
 	}
-
-	cmd := exec.Command("go", args[1:]...) // [1: skips the "go" in args list
+	parts := []string{"build", "-o"}
+	if buildPath() != "" {
+		parts = append(parts, buildPath())
+	}
+	if buildArgs() != "" {
+		parts = append(parts, buildArgs())
+	}
+	if mainPath() != "" {
+		parts = append(parts, mainPath())
+	}
+	cmd := Cmd("go", strings.Join(parts, " "))
+	buildLog(cmd.SysProcAttr.CmdLine)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {

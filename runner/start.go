@@ -72,7 +72,7 @@ func start() {
 				mainLog("Started! (%d Goroutines)", runtime.NumGoroutine())
 			}
 			err := removeBuildErrorsLog()
-			if err != nil {
+			if err != nil && !os.IsNotExist(err) {
 				if isDebug() {
 					mainLog(err.Error())
 				}

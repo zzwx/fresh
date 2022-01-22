@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"flag"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -100,4 +101,23 @@ tmp, "",
 		t.Errorf("Expected %v, got %v", expected, settings.Ignore)
 	}
 
+}
+
+func TestSpaceSeparatedArgs(t *testing.T) {
+	flagSet := flag.NewFlagSet("", flag.ContinueOnError)
+	flagSet.String("cors-trusted-origins", "", "specify cors trusted origins")
+	err := flagSet.Parse([]string{"--cors-trusted-origins", "http://localhost:9000 http://localhost:9001"})
+	if err != nil {
+		t.Errorf("error parsing flagset %e", err)
+	}
+	if !flagSet.Parsed() {
+		t.Errorf("flagSet should be parsed")
+	}
+
+	v := flagSet.Lookup("cors-trusted-origins")
+	expected := "http://localhost:9000 http://localhost:9001"
+	got := v.Value.String()
+	if got != expected {
+		t.Errorf("Expected %v, got %v", expected, got)
+	}
 }

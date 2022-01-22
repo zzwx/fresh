@@ -148,9 +148,9 @@ func logColor(logName string) string {
 // tagDetails takes the struct field from a Field's Tag and splits the tag data `yaml:"ignored,omitempty",fresh:"noenv"`
 // to retrieve the field name and possible omit (if omitempty is found) and noenv (if found)
 func tagDetails(field reflect.StructTag) (keyName string, omit bool, noenv bool) {
-	yaml := field.Get("yaml")
+	yaml_ := field.Get("yaml")
 	fresh := field.Get("fresh")
-	split := strings.Split(yaml, ",")
+	split := strings.Split(yaml_, ",")
 	if len(split) == 0 {
 		return
 	}

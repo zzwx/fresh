@@ -16,4 +16,4 @@ log_color_watcher: magenta
 log_color_app:
 delve:             true
 delve_args:        debug ./test/delve/cmd --listen=:44444 --headless=true --api-version=2 --output=./tmp/runner-build --log
-debug: true
+debug:             true
