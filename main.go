@@ -19,7 +19,7 @@ import (
 	"os"
 )
 
-const VERSION = "1.3.3"
+const VERSION = "1.3.4"
 
 func main() {
 	var version *bool

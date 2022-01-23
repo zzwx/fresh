@@ -14,22 +14,22 @@ import (
 )
 
 var (
-	startChannel chan string
-	stopChannel  chan bool
-	done         chan bool
-	quit         chan os.Signal
-	exiting      bool
-	mainLog      logFunc
-	watcherLog   logFunc
-	runnerLog    logFunc
-	buildLog     logFunc
-	appLog       logFunc
+	watchChannel    chan string
+	killChannel     chan struct{}
+	killDoneChannel chan struct{}
+	done            chan struct{}
+	exiting         bool
+	mainLog         logFunc
+	watcherLog      logFunc
+	runnerLog       logFunc
+	buildLog        logFunc
+	appLog          logFunc
 )
 
 func flushEvents() {
 	for {
 		select {
-		case eventName := <-startChannel:
+		case eventName := <-watchChannel:
 			if isDebug() {
 				mainLog("Event %s", eventName)
 			}
@@ -41,7 +41,7 @@ func flushEvents() {
 
 func start() {
 	loopIndex := 0
-	buildDelay := buildDelay()
+	delay := buildDelay()
 
 	started := false
 
@@ -51,26 +51,18 @@ func start() {
 		for {
 			loopIndex++
 			if isDebug() {
-				mainLog("Waiting (loop %d)...", loopIndex)
+				mainLog("Waits (Loop: %d, Goroutines: %d)", loopIndex, runtime.NumGoroutine())
 			}
-			eventName := <-startChannel
+			eventName := <-watchChannel
 
 			if isDebug() {
 				mainLog("First event: %s", eventName)
 			}
 			if isDebug() {
-				mainLog("Sleeping for %d milliseconds...", buildDelay)
+				mainLog("Sleeps for %v", delay)
 			}
-			time.Sleep(buildDelay * time.Millisecond)
-			if isDebug() {
-				mainLog("Flushing events")
-			}
+			time.Sleep(delay)
 
-			flushEvents()
-
-			if isDebug() {
-				mainLog("Started! (%d Goroutines)", runtime.NumGoroutine())
-			}
 			err := removeBuildErrorsLog()
 			if err != nil && !os.IsNotExist(err) {
 				if isDebug() {
@@ -78,22 +70,28 @@ func start() {
 				}
 			}
 
+			if isDebug() {
+				mainLog("Flushes events")
+			}
+			flushEvents()
+
 			buildFailed := false
 			if shouldRebuild(eventName) {
-				mainLog("Rebuilding due to \"%v\"...", eventName)
-				errorMessage, ok := build()
-				if !ok {
+				mainLog("Rebuilds due to: %v", eventName)
+				err := build()
+				if err != nil {
 					buildFailed = true
-					mainLog("Build Failed: \n %s", errorMessage)
+					mainLog("Fails: \n %v", err)
 					if !started {
 						os.Exit(1)
 					}
-					createBuildErrorsLog(errorMessage)
+					createBuildErrorsLog(err.Error())
 				}
 
 				if !buildFailed {
 					if started {
-						stopChannel <- true
+						killChannel <- struct{}{}
+						<-killDoneChannel // we don't want run() before killing is finished
 					}
 					run()
 					started = true
@@ -105,8 +103,9 @@ func start() {
 }
 
 func init() {
-	startChannel = make(chan string, 1000)
-	stopChannel = make(chan bool)
+	watchChannel = make(chan string, 1000)
+	killChannel = make(chan struct{})
+	killDoneChannel = make(chan struct{})
 }
 
 const maxPrefixLength = 7
@@ -155,14 +154,14 @@ func termHandler() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	exiting = true
-	stopChannel <- true
+	killChannel <- struct{}{}
 }
 
 // Start Watches for file changes in the root directory.
 // After each file system event it builds and (re)starts the application.
 func Start() {
 
-	done = make(chan bool)
+	done = make(chan struct{})
 
 	initLimit()
 	initLogFuncs() // Initialize log functions with default settings for initSettings to use
@@ -172,7 +171,7 @@ func Start() {
 	setEnvVars()
 	watch()
 	start()
-	startChannel <- string(filepath.Separator)
+	watchChannel <- string(filepath.Separator)
 
 	<-done
 }

@@ -1,15 +1,16 @@
 package runner
 
 import (
+	"errors"
 	"io"
 	"io/ioutil"
 	"os"
 	"strings"
 )
 
-func build() (string, bool) {
+func build() error {
 	if mustUseDelve() {
-		return "", true
+		return nil
 	}
 	parts := []string{"build", "-o"}
 	if buildPath() != "" {
@@ -22,7 +23,7 @@ func build() (string, bool) {
 		parts = append(parts, mainPath())
 	}
 	cmd := Cmd("go", strings.Join(parts, " "))
-	buildLog(cmd.SysProcAttr.CmdLine)
+	buildLog("Builds %v", cmd.SysProcAttr.CmdLine)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
@@ -44,8 +45,8 @@ func build() (string, bool) {
 
 	err = cmd.Wait()
 	if err != nil {
-		return string(errBuf), false
+		return errors.New(string(errBuf))
 	}
 
-	return "", true
+	return nil
 }

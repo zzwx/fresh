@@ -9,8 +9,8 @@ require (
 	github.com/google/licensecheck v0.0.0-20200710184526-158d942212ef
 	github.com/howeyc/fsnotify v0.9.0
 	github.com/klauspost/compress v1.11.7 // indirect
-	github.com/mattn/go-colorable v0.1.11
+	github.com/mattn/go-colorable v0.1.12
 	github.com/valyala/fasthttp v1.19.0
-	golang.org/x/sys v0.0.0-20211007075335-d3039528d8ac // indirect
+	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )

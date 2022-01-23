@@ -228,7 +228,7 @@ func loadRunnerConfigSettings() {
 	if _, err := os.Stat(cfgPath); err != nil {
 		mainLog("No config file found at %q. Using default settings", cfgPath)
 	} else {
-		mainLog("Loading settings from %q", cfgPath)
+		mainLog("Loads settings from %q", cfgPath)
 		file, err := ioutil.ReadFile(cfgPath)
 		if err != nil {
 			mainLog("Error reading config file %q: %v", cfgPath, err)

@@ -12,11 +12,11 @@ import (
 
 func initFolders() {
 	if isDebug() {
-		runnerLog("Initializing folders...")
+		runnerLog("Initializes folders")
 	}
 	path := tmpPath()
 	if _, errDir := os.Stat(path); os.IsNotExist(errDir) {
-		runnerLog("Creating %s...", path)
+		runnerLog("Creates %s", path)
 		err := os.Mkdir(path, 0755)
 
 		if err != nil {

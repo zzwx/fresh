@@ -20,9 +20,9 @@ func watchFolder(path string) {
 			case ev := <-watcher.Event:
 				if isWatchedExt(ev.Name) && !ev.IsAttrib() {
 					if isDebug() {
-						watcherLog("sending event %s", ev)
+						watcherLog("Sends event %s", ev)
 					}
-					startChannel <- ev.String()
+					watchChannel <- ev.String()
 				}
 			case err := <-watcher.Error:
 				watcherLog("Error: %s", err)
@@ -35,7 +35,7 @@ func watchFolder(path string) {
 		ppath = p
 	}
 
-	watcherLog("Watching %s", ppath)
+	watcherLog("Watches %s", ppath)
 
 	err = watcher.Watch(path)
 
@@ -54,7 +54,7 @@ func watch() {
 
 			if isIgnored(path) {
 				if isDebug() {
-					watcherLog("Ignoring %s", path)
+					watcherLog("Ignores %s", path)
 				}
 				// Not automatically ignoring subdirectories anymore. Ignore has to be explicit.
 				// return filepath.SkipDir

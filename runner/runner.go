@@ -6,16 +6,14 @@ import (
 	"syscall"
 )
 
-func run() bool {
+func run() {
 	var cmd *exec.Cmd
 	if mustUseDelve() {
 		cmd = Cmd("dlv", delveArgs())
 	} else {
 		cmd = Cmd(buildPath(), runArgs())
 	}
-	if isDebug() {
-		runnerLog(cmd.SysProcAttr.CmdLine)
-	}
+	runnerLog("Starts %v", cmd.SysProcAttr.CmdLine)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
@@ -32,37 +30,40 @@ func run() bool {
 		fatal(err)
 	}
 
+	if isDebug() {
+		runnerLog("PID %d", cmd.Process.Pid)
+	}
+
 	go io.Copy(appLogWriter{}, stderr)
 	go io.Copy(appLogWriter{}, stdout)
 
 	go func() {
-		<-stopChannel
-		if isDebug() {
-			runnerLog("Stopping...")
-		}
+		defer func() {
+			killDoneChannel <- struct{}{}
+		}()
+		<-killChannel
 
 		pid := cmd.Process.Pid
-		runnerLog("Killing PID %d...", pid)
+		runnerLog("Kills PID %d", pid)
 
 		if err := cmd.Process.Kill(); err != nil {
 			if isDebug() {
-				runnerLog("Killing PID %d failed: %v", pid, err)
+				runnerLog("Killing PID %d error: %v", pid, err)
 			}
 		}
 
-		if exiting == true {
+		if exiting {
 			resetTermColors()
-			done <- true
+			done <- struct{}{}
 		}
 
+		_, err := cmd.Process.Wait()
 		if isDebug() {
-			runnerLog("Killed")
+			if err != nil {
+				runnerLog("Exited PID %d with error: %v", pid, err)
+			}
 		}
-		cmd.Process.Wait()
-
 	}()
-
-	return true
 }
 
 // Cmd constructs a raw exec.Cmd to let it parse arguments
