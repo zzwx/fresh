@@ -19,3 +19,7 @@ func Cmd(cmdName string, args string) *exec.Cmd {
 	cmd.SysProcAttr.CmdLine = syscall.EscapeArg(cmd.Path) + " " + args
 	return cmd
 }
+
+func CmdStr(cmd *exec.Cmd) string {
+	return cmd.SysProcAttr.CmdLine
+}

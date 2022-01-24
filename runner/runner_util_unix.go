@@ -17,3 +17,7 @@ func Cmd(cmdName string, args string) *exec.Cmd {
 	cmd := exec.Command(cmdName, strings.Fields(args)...)
 	return cmd
 }
+
+func CmdStr(cmd *exec.Cmd) string {
+	return cmd.String()
+}

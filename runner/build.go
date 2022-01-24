@@ -12,8 +12,9 @@ func build() error {
 	if mustUseDelve() {
 		return nil
 	}
-	parts := []string{"build", "-o"}
+	parts := []string{"build"}
 	if buildPath() != "" {
+		parts = append(parts, "-o")
 		parts = append(parts, buildPath())
 	}
 	if buildArgs() != "" {
@@ -23,7 +24,7 @@ func build() error {
 		parts = append(parts, mainPath())
 	}
 	cmd := Cmd("go", strings.Join(parts, " "))
-	buildLog("Building %v", cmd.SysProcAttr.CmdLine)
+	buildLog("Building %v", CmdStr(cmd))
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {

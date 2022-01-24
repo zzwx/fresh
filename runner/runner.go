@@ -12,7 +12,7 @@ func run() {
 	} else {
 		cmd = Cmd(buildPath(), runArgs())
 	}
-	runnerLog("Starting %v", cmd.SysProcAttr.CmdLine)
+	runnerLog("Starting %v", CmdStr(cmd))
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
