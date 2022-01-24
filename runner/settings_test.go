@@ -33,8 +33,8 @@ func TestLoadEnvSettings(t *testing.T) {
 
 	os.Setenv(EnvPrefix+"BUILD_DELAY", "800")
 	loadEnvSettings()
-	if settings.BuildDelay != 800 {
-		t.Errorf("Expected %d, got %d", 800, settings.BuildDelay)
+	if settings.BuildDelay != "800" {
+		t.Errorf("Expected %v, got %v", "800", settings.BuildDelay)
 	}
 	os.Setenv(EnvPrefix+"DELVE", "true")
 	loadEnvSettings()
