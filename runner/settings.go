@@ -33,7 +33,7 @@ type Settings struct {
 	ValidExt        string `yaml:"valid_ext"`
 	NoRebuildExt    string `yaml:"no_rebuild_ext"`
 	Ignore          string `yaml:"ignore"`
-	BuildDelay      uint   `yaml:"build_delay"` // Nanoseconds
+	BuildDelay      string `yaml:"build_delay"` // Number: Nanoseconds, otherwise - parse Duration
 	Colors          bool   `yaml:"colors"`
 	LogColorMain    string `yaml:"log_color_main"`
 	LogColorBuild   string `yaml:"log_color_build"`
@@ -61,7 +61,7 @@ func init() {
 	settings.ValidExt = ".go, .tpl, .tmpl, .html"
 	settings.NoRebuildExt = ".tpl, .tmpl, .html"
 	settings.Ignore = "assets, tmp/*"
-	settings.BuildDelay = 600
+	settings.BuildDelay = "600"
 	settings.Colors = true
 	settings.LogColorMain = "cyan"
 	settings.LogColorBuild = "yellow"
@@ -336,7 +336,20 @@ func configPath() string {
 }
 
 func buildDelay() time.Duration {
-	return time.Duration(settings.BuildDelay)
+	if v, err := strconv.ParseInt(settings.BuildDelay, 10, 64); err == nil {
+		if v > 0 {
+			return time.Duration(v)
+		}
+	}
+	if v, err := strconv.ParseFloat(settings.BuildDelay, 64); err == nil {
+		if v > 0 {
+			return time.Duration(int64(v))
+		}
+	}
+	if v, err := time.ParseDuration(settings.BuildDelay); err == nil {
+		return v
+	}
+	return time.Duration(600) // 600 nanoseconds
 }
 
 func mustUseDelve() bool {

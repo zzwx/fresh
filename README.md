@@ -39,6 +39,7 @@ This fork aims to:
 * Use **module path** as `main_path` instead of file path to let Go build main packages in sub-directories with enabled modules mode which has become a standard.
 * Specify `run_args` and `build_args` separately.
   * `build_args` example: `-race`.
+* Allow delay to be specified with units (1s, 100ms, 1000ns). A simple number means nanoseconds.
 
 Converting to `yaml` configuration allows for multi-line values (with at least one space padding on every line) to be used for long option values.
 Also, comments are possible after `#` symbol.
@@ -176,7 +177,7 @@ no_rebuild_ext: .tpl, .tmpl, .html # Extensions list to ignore rebuilding
 ignore: # Ignore watching of both folders and individual files. Use * or ** and multiple lines for readability 
   assets,
   tmp, # Trailing comma will be auto-truncated. 
-build_delay: 600 # Nanoseconds to wait after change before attempting to rebuild.
+build_delay: 600 # Nanoseconds to wait after change before attempting to rebuild. Accepts 1e+9 form and Duration format like 1s, 100ms, etc.
 colors: true
 log_color_main: cyan
 log_color_build: yellow
