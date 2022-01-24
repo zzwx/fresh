@@ -17,7 +17,7 @@ var (
 	watchChannel    chan string
 	killChannel     chan struct{}
 	killDoneChannel chan struct{}
-	done            chan struct{}
+	doneChannel     chan struct{}
 	exiting         bool
 	mainLog         logFunc
 	watcherLog      logFunc
@@ -31,7 +31,7 @@ func flushEvents() {
 		select {
 		case eventName := <-watchChannel:
 			if isDebug() {
-				mainLog("Event %s", eventName)
+				mainLog("Skipping %s", eventName)
 			}
 		default:
 			return
@@ -51,7 +51,7 @@ func start() {
 		for {
 			loopIndex++
 			if isDebug() {
-				mainLog("Waits (Loop: %d, Goroutines: %d)", loopIndex, runtime.NumGoroutine())
+				mainLog("Waiting for (Loop: %d, Goroutines: %d)", loopIndex, runtime.NumGoroutine())
 			}
 			eventName := <-watchChannel
 
@@ -59,7 +59,7 @@ func start() {
 				mainLog("First event: %s", eventName)
 			}
 			if isDebug() {
-				mainLog("Sleeps for %v", delay)
+				mainLog("Sleeping %v", delay)
 			}
 			time.Sleep(delay)
 
@@ -71,17 +71,17 @@ func start() {
 			}
 
 			if isDebug() {
-				mainLog("Flushes events")
+				mainLog("Skipping events")
 			}
 			flushEvents()
 
 			buildFailed := false
 			if shouldRebuild(eventName) {
-				mainLog("Rebuilds due to: %v", eventName)
+				mainLog("Rebuilding due to: %v", eventName)
 				err := build()
 				if err != nil {
 					buildFailed = true
-					mainLog("Fails: \n %v", err)
+					mainLog("Failed:\n%v", err)
 					if !started {
 						os.Exit(1)
 					}
@@ -161,7 +161,7 @@ func termHandler() {
 // After each file system event it builds and (re)starts the application.
 func Start() {
 
-	done = make(chan struct{})
+	doneChannel = make(chan struct{})
 
 	initLimit()
 	initLogFuncs() // Initialize log functions with default settings for initSettings to use
@@ -173,5 +173,5 @@ func Start() {
 	start()
 	watchChannel <- string(filepath.Separator)
 
-	<-done
+	<-doneChannel
 }

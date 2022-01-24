@@ -13,7 +13,7 @@ func run() {
 	} else {
 		cmd = Cmd(buildPath(), runArgs())
 	}
-	runnerLog("Starts %v", cmd.SysProcAttr.CmdLine)
+	runnerLog("Starting %v", cmd.SysProcAttr.CmdLine)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
@@ -44,7 +44,7 @@ func run() {
 		<-killChannel
 
 		pid := cmd.Process.Pid
-		runnerLog("Kills PID %d", pid)
+		runnerLog("Killing PID %d", pid)
 
 		if err := cmd.Process.Kill(); err != nil {
 			if isDebug() {
@@ -54,13 +54,13 @@ func run() {
 
 		if exiting {
 			resetTermColors()
-			done <- struct{}{}
+			doneChannel <- struct{}{}
 		}
 
 		_, err := cmd.Process.Wait()
 		if isDebug() {
 			if err != nil {
-				runnerLog("Exited PID %d with error: %v", pid, err)
+				runnerLog("PID %d exit error: %v", pid, err)
 			}
 		}
 	}()

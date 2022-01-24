@@ -23,7 +23,7 @@ func build() error {
 		parts = append(parts, mainPath())
 	}
 	cmd := Cmd("go", strings.Join(parts, " "))
-	buildLog("Builds %v", cmd.SysProcAttr.CmdLine)
+	buildLog("Building %v", cmd.SysProcAttr.CmdLine)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
