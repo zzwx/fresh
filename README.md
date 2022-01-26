@@ -5,6 +5,11 @@
 [Fresh](https://github.com/zzwx/fresh) is a command-line tool for hot reload that builds and (re)starts your written in Go application, including a web app, every time you save a `.go` or template file or any desired files you specify using configuration.
 It is not aiming to gracefully shutdown the server, but rather simply restart it, killing the other process.
 
+## Installation
+
+* `go install github.com/zzwx/fresh@latest` - latest release.
+* `go install github.com/zzwx/fresh@master` - bleeding edge. 
+
 ## History
 
 This fork is taken from original [fresh](https://github.com/gravityblast/fresh) because the author, [Andrea Franz](http://gravityblast.com), announced it as unmaintained.
@@ -39,7 +44,8 @@ This fork aims to:
 * Use **module path** as `main_path` instead of file path to let Go build main packages in sub-directories with enabled modules mode which has become a standard.
 * Specify `run_args` and `build_args` separately.
   * `build_args` example: `-race`.
-* Allow delay to be specified with units (1s, 100ms, 1000ns). A simple number means nanoseconds.
+* Since v1.3.4:
+  * Allow `build_delay` to be specified with units (1s, 100ms, 1000ns) and scientific notation. A simple number means nanoseconds.
 
 Converting to `yaml` configuration allows for multi-line values (with at least one space padding on every line) to be used for long option values.
 Also, comments are possible after `#` symbol.
@@ -104,12 +110,6 @@ can't load package: package cmd is not in GOROOT (...)
 
 * Some editors save the files that haven't changed and that triggers rebuilding.
  
-## Installation
-
-```bash
-$ go install github.com/zzwx/fresh@latest
-```
-
 ## Changelog
 
 * `1.3.3` - `fresh` won't run anymore on a folder that has no `.fresh.yaml` in it to prevent accidental execution. 
@@ -177,7 +177,7 @@ no_rebuild_ext: .tpl, .tmpl, .html # Extensions list to ignore rebuilding
 ignore: # Ignore watching of both folders and individual files. Use * or ** and multiple lines for readability 
   assets,
   tmp, # Trailing comma will be auto-truncated. 
-build_delay: 600 # Nanoseconds to wait after change before attempting to rebuild. Accepts 1e+9 form and Duration format like 1s, 100ms, etc.
+build_delay: 600 # Nanoseconds to wait after change before attempting to rebuild. Since v1.3.4 accepts 1e+9 forms and Duration format like 1s, 100ms, etc.
 colors: true
 log_color_main: cyan
 log_color_build: yellow
