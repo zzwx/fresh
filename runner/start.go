@@ -49,7 +49,6 @@ func start() {
 
 	go func() {
 		for {
-			loopIndex++
 			if isDebug() {
 				mainLog("Waiting for (Loop: %d, Goroutines: %d)", loopIndex, runtime.NumGoroutine())
 			}
@@ -58,10 +57,12 @@ func start() {
 			if isDebug() {
 				mainLog("First event: %s", eventName)
 			}
-			if isDebug() {
-				mainLog("Sleeping %v", delay)
+			if loopIndex > 0 {
+				if isDebug() {
+					mainLog("Sleeping %v", delay)
+				}
+				time.Sleep(delay)
 			}
-			time.Sleep(delay)
 
 			err := removeBuildErrorsLog()
 			if err != nil && !os.IsNotExist(err) {
@@ -97,7 +98,7 @@ func start() {
 					started = true
 				}
 			}
-			//mainLog(strings.Repeat("-", 20))
+			loopIndex++
 		}
 	}()
 }
